@@ -3,6 +3,7 @@ import time
 import os
 import sys
 import json
+import csv
 
 class match_maker:
     def __init__(self):
@@ -33,3 +34,6 @@ class match_maker:
 
         except NameError:
             print('Incorrect Json format')
+
+    def new_player(self, name):
+        pass

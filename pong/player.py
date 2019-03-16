@@ -1,7 +1,12 @@
+import math
 import pygame
+import random
+import player as Player
 
-
-class Player:
+# Define some colors
+BLACK = (0 ,0, 0)
+WHITE = (255, 255, 255)
+class Player(pygame.sprite.Sprite):
 
     def __init__(self, username, ip, side):
         self.username = username
@@ -9,9 +14,27 @@ class Player:
         self.side = side
         self.position = 0
         self.score = 0
+        self.width = 15
+        self.height = 75
+        super().__init__()
 
-    def move(self, val):
-        self.position += val
+        # Create the image of the ball
+        self.image = pygame.Surface([15, 75])
+
+        # Color the ball
+        self.image.fill(WHITE)
+
+        # Get a rectangle object that shows where our image is
+        self.rect = self.image.get_rect()
+
+        self.y = self.rect.y
+        self.x = self.rect.x
+
+    def move(self, movement):
+        self.y += movement
+
+    def update(self):
+        self.rect.y = self.y
 
     def update_score(self):
         self.score+=1
