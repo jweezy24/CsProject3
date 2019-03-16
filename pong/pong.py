@@ -39,8 +39,8 @@ balls.add(ball)
 
 
 # Create the player paddle object
-player1 = player.Player("jweezy",580,"L")
-player2 = player.Player("lol",25, "R")
+player1 = player.Player("jweezy","L", 25)
+player2 = player.Player("lol","R", 775)
 
 movingsprites = pygame.sprite.Group()
 movingsprites.add(player1)
@@ -64,9 +64,13 @@ while not exit_program:
 
     keys = pygame.key.get_pressed()  #checking pressed keys
     if keys[pygame.K_UP]:
-        player1.move(-5)
+        player2.move(-10)
     if keys[pygame.K_DOWN]:
-        player1.move(5)
+        player2.move(10)
+    if keys[pygame.K_w]:
+        player1.move(-10)
+    if keys[pygame.K_s]:
+        player1.move(10)
 
 
     # Stop the game if there is an imbalance of 3 points
@@ -92,19 +96,14 @@ while not exit_program:
         diff = (player1.rect.x + player1.width/2) - (ball.rect.x+ball.width/2)
 
         # Set the ball's y position in case we hit the ball on the edge of the paddle
-        ball.y = 570
-        ball.bounce(diff)
-        score1 += 1
+        ball.player_bounce(player1,diff)
 
     # See if the ball hits the player paddle
     if pygame.sprite.spritecollide(player2, balls, False):
         # The 'diff' lets you try to bounce the ball left or right depending where on the paddle you hit it
         diff = (player2.rect.x + player2.width/2) - (ball.rect.x+ball.width/2)
-
         # Set the ball's y position in case we hit the ball on the edge of the paddle
-        ball.y = 40
-        ball.bounce(diff)
-        score2 += 1
+        ball.player_bounce(player2,diff)
 
     # Print the score
     scoreprint = "Player 1: "+str(score1)

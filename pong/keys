@@ -1,0 +1,26 @@
+pygame 1.9.4
+Hello from the pygame community. https://www.pygame.org/contribute.html
+<Event(1-ActiveEvent {'gain': 0, 'state': 1})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(2-KeyDown {'unicode': 'w', 'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(3-KeyUp {'key': 119, 'mod': 4096, 'scancode': 25})>
+<Event(1-ActiveEvent {'gain': 0, 'state': 2})>
+pygame 1.9.4
+Hello from the pygame community. https://www.pygame.org/contribute.html
+<Event(1-ActiveEvent {'gain': 0, 'state': 1})>
+<Event(2-KeyDown {'unicode': '', 'key': 306, 'mod': 4096, 'scancode': 37})>
+<Event(2-KeyDown {'unicode': '\x03', 'key': 99, 'mod': 4160, 'scancode': 54})>
+<Event(3-KeyUp {'key': 99, 'mod': 4160, 'scancode': 54})>
+<Event(3-KeyUp {'key': 306, 'mod': 4096, 'scancode': 37})>
+<Event(1-ActiveEvent {'gain': 0, 'state': 2})>

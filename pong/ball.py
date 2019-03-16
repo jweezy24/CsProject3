@@ -64,7 +64,26 @@ class Ball(pygame.sprite.Sprite):
         self.direction -= diff
 
         # Speed the ball up
-        self.speed *= 1.1
+        self.speed *= 1.01
+
+    def wall_bounce(self):
+        self.direction = (180-self.direction)%360
+
+        # Speed the ball up
+        self.speed *= 1.01
+
+
+    def player_bounce(self, player, diff):
+        if player.side == "R":
+            self.x = player.x - 20
+        elif player.side == "L":
+            self.x = player.x + 20
+        self.direction = (360-self.direction)%360
+        self.direction -= diff
+
+        # Speed the ball up
+        self.speed *= 1.01
+
 
     # Update the position of the ball
     def update(self):
@@ -76,10 +95,10 @@ class Ball(pygame.sprite.Sprite):
         self.y -= self.speed * math.cos(direction_radians)
 
         if self.y < 0:
-            self.bounce(random.randrange(20))
+            self.wall_bounce()
 
         if self.y > 600:
-            self.bounce(random.randrange(20))
+            self.wall_bounce()
 
         # Move the image to where our x and y are
         self.rect.x = self.x

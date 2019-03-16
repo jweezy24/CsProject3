@@ -8,9 +8,8 @@ BLACK = (0 ,0, 0)
 WHITE = (255, 255, 255)
 class Player(pygame.sprite.Sprite):
 
-    def __init__(self, username, ip, side):
+    def __init__(self, username, side, pos):
         self.username = username
-        self.ip = ip
         self.side = side
         self.position = 0
         self.score = 0
@@ -28,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         self.y = self.rect.y
+        self.rect.x = pos
         self.x = self.rect.x
 
     def move(self, movement):
