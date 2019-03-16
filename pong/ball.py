@@ -42,7 +42,7 @@ class Ball(pygame.sprite.Sprite):
         self.height = 10
 
         # Set the initial ball speed and position
-        self.reset()
+        self.reset("R")
 
         self.p1_score = 0
         self.p2_score = 0

@@ -94,7 +94,7 @@ class match_maker:
         self.server_socket.sendto(json_message2.encode(), player1[2])
         self.server_socket.sendto(json_message.encode(), player2[2])
         lobby_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        lobby_socket.bind(('0.0.0.0',8000))
+        lobby_socket.bind(('0.0.0.0',8001))
         while True:
             send_out = {'local_movement': 0, 'away_movement': 0}
             message, address = lobby_socket.recvfrom(1024)
