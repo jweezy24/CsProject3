@@ -47,19 +47,16 @@ class Ball(pygame.sprite.Sprite):
         self.p1_score = 0
         self.p2_score = 0
 
-    def reset(self):
+    def reset(self, winner):
         self.x = 400
         self.y = 350.0
         self.speed=8.0
 
         # Direction of ball (in degrees)
-        self.direction = random.randrange(-45,45)
-
-        # Flip a 'coin'
-        if random.randrange(2) == 0 :
-            # Reverse ball direction, let the other guy get it first
-            self.direction += 180
-            self.y = 50
+        if winner == "R":
+            self.direction = -45
+        else:
+            self.direction = 45
 
 
     def wall_bounce(self):
@@ -103,9 +100,9 @@ class Ball(pygame.sprite.Sprite):
         # Do we bounce off the left of the screen?
         if self.x <= 0:
             self.p2_score += 1
-            self.reset()
+            self.reset("L")
 
         # Do we bounce of the right side of the screen?
         if self.x > self.screenwidth-self.width:
             self.p1_score += 1
-            self.reset()
+            self.reset("R")

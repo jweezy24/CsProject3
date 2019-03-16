@@ -15,10 +15,26 @@ sock2.bind(("0.0.0.0",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 local_server = ("<broadcast>", 7999)
+game_server = ("<broadcast>", 8000)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+def send_info(json_message):
+    sock.sendto(str(json_message).encode(), game_server)
+
+def create_listen_thread():
+    t= threading.Thread(target=listen, args=(sock, ))
+    threads.append(t)
+    t.start()
+
+def listen():
+    while True:
+        message, address = sock.recvfrom(1024)
+        threads[0].name = message
+
 def pong(player1_name, player2_name, message):
+    create_listen_thread()
+    dict_message = {"op" :"update", "move": 0}
     BLACK = (0 ,0, 0)
     WHITE = (255, 255, 255)
 
@@ -74,14 +90,10 @@ def pong(player1_name, player2_name, message):
                 main_menu.quit()
 
         keys = pygame.key.get_pressed()  #checking pressed keys
-        if keys[pygame.K_UP]:
-            player2.move(-10)
-        if keys[pygame.K_DOWN]:
-            player2.move(10)
         if keys[pygame.K_w]:
-            player1.move(-10)
+            dict_message["movement"] = 10
         if keys[pygame.K_s]:
-            player1.move(10)
+            dict_message["movement"] = -10
 
 
         # Stop the game if there is an imbalance of 3 points
@@ -90,6 +102,10 @@ def pong(player1_name, player2_name, message):
 
         if not done:
             # Update the player and ball positions
+            send_info(json.dumps(dict_message))
+            json_message = json.loads(threads[0].name)
+            player1.move(json_message["local_movement"])
+            player2.move(json_message["away_movement"])
             player1.update()
             player2.update()
             ball.update()
