@@ -5,6 +5,7 @@ import pygame
 import random
 import player
 import ball
+import main_menu
 
 # Define some colors
 BLACK = (0 ,0, 0)
@@ -50,11 +51,15 @@ movingsprites.add(ball)
 clock = pygame.time.Clock()
 done = False
 exit_program = False
+game_found = False
 
 while not exit_program:
 
     # Clear the screen
     screen.fill(BLACK)
+
+    while not game_found:
+        main_menu.game_intro()
 
 
     for event in pygame.event.get():

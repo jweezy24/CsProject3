@@ -1,7 +1,9 @@
 import pygame
 import time
 import random
-
+import socket
+import csv
+import json
 #most code is from here https://pythonprogramming.net/pygame-start-menu-tutorial/
 pygame.init()
 
@@ -20,38 +22,46 @@ pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
 
 
+#init networking stuff
+sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock2.bind(("0.0.0.0",0))
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-def things_dodged(count):
-    font = pygame.font.SysFont(None, 25)
-    text = font.render("Dodged: "+str(count), True, black)
-    gameDisplay.blit(text,(0,0))
+local_server = ("<broadcast>", 7999)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+sock.settimeout(2)
 
-def things(thingx, thingy, thingw, thingh, color):
-    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
+def read_csv():
+    file = open('./config.csv')
+    reader = csv.reader(file)
+    username = 'NOT_FOUND'
+    val_found = False
+    for row in reader:
+        for item in row:
+            if item == 'username':
+                val_found = True
+                continue
+            if val_found:
+                username = item
+                val_found = False
+    file.close()
+    return username
+
+
+def send_info():
+    username = read_csv()
+    print(username)
+    dict = {'op': 'searching', 'username': username}
+    json_message = json.dumps(dict)
+    sock.sendto(str(json_message).encode(), local_server)
+
+def listen():
+    pass
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def message_display(text):
-    largeText = pygame.font.Font('freesansbold.ttf',115)
-    TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((display_width/2),(display_height/2))
-    gameDisplay.blit(TextSurf, TextRect)
-
-    pygame.display.update()
-
-    time.sleep(2)
-
-    game_loop()
-
-
-
-def crash():
-    message_display('You Crashed')
-
-def get_state():
-    pass
 
 def game_intro():
     count = 0
@@ -98,7 +108,7 @@ def game_intro():
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-
+        send_info()
         pygame.display.update()
         clock.tick(15)
         count+=1
