@@ -4,6 +4,7 @@ import random
 import socket
 import csv
 import json
+import threading
 #most code is from here https://pythonprogramming.net/pygame-start-menu-tutorial/
 pygame.init()
 
@@ -20,6 +21,7 @@ block_color = (53,115,255)
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
+global_message = ''
 
 
 #init networking stuff
@@ -29,7 +31,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 local_server = ("<broadcast>", 7999)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-sock.settimeout(2)
+threads = []
 
 def read_csv():
     file = open('./config.csv')
@@ -55,8 +57,15 @@ def send_info():
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
+def create_listen_thread():
+    t= threading.Thread(target=listen)
+    threads.append(t)
+    t.start()
+
 def listen():
-    pass
+    while True:
+        message, address = sock.recvfrom(1024)
+        threads[0].name = message
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -64,6 +73,7 @@ def text_objects(text, font):
 
 
 def game_intro():
+    create_listen_thread()
     count = 0
     intro = True
     display_searchRect = None
@@ -109,6 +119,7 @@ def game_intro():
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
         send_info()
+        print(threads[0].name)
         pygame.display.update()
         clock.tick(15)
         count+=1

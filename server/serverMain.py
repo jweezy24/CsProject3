@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import csv
+import threading
 
 class match_maker:
     def __init__(self):
@@ -22,23 +23,25 @@ class match_maker:
         address = ''
         try:
             message, address = self.server_socket.recvfrom(1024)
+            if len(self.player_queue) >= 2:
+                self.match_players()
         except socket.timeout:
             print("timeout")
             return
-        self.parse_json(message)
+        self.parse_json(message,address)
 
-    def parse_json(self,packet):
-        #try:
+    def parse_json(self,packet,address):
+        try:
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
-                self.player_queue.append((json_message["username"], json_message))
+                self.player_queue.append((json_message["username"], json_message, address))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
             print(json_message)
 
-        #except NameError:
-            #print('Incorrect Json format')
+        except NameError:
+            print('Incorrect Json format')
 
     def new_player(self, name):
         file = open('./allPlayers.csv')
@@ -71,6 +74,22 @@ class match_maker:
             if i[0] == name:
                 return True
         return False
+
+    def match_players(self):
+        if len(self.player_queue) >=2:
+            self.create_lobby(self.player_queue.pop(), self.player_queue.pop())
+
+    def create_lobby(self, player1, player2):
+        t = threading.Thread(target=self.play_game, args=(player1,player2, ))
+        print(player1[2])
+        self.threads.append(t)
+        self.lobbies.append(("playing", player1, player2))
+        t.start()
+
+    def play_game(self, player1, player2):
+        print("play game nigga")
+        self.server_socket.sendto("reply".encode(), player1[2])
+        self.server_socket.sendto("reply".encode(), player2[2])
 
 server = match_maker()
 
