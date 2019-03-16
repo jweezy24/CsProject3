@@ -4,132 +4,150 @@ import math
 import pygame
 import random
 import player
-import ball
+import ball as ball2
+import socket
 import main_menu
+import json
 
-# Define some colors
-BLACK = (0 ,0, 0)
-WHITE = (255, 255, 255)
+#init networking stuff
+sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock2.bind(("0.0.0.0",0))
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-score1 = 0
-score2 = 0
+local_server = ("<broadcast>", 7999)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+threads = []
 
-# Call this function so the Pygame library can initialize itself
-pygame.init()
+def pong(player1_name, player2_name, message):
+    BLACK = (0 ,0, 0)
+    WHITE = (255, 255, 255)
 
-# Create an 800x600 sized screen
-screen = pygame.display.set_mode([800, 600])
+    score1 = 0
+    score2 = 0
 
-# Set the title of the window
-pygame.display.set_caption('Pong')
+    # Call this function so the Pygame library can initialize itself
+    pygame.init()
 
-# Enable this to make the mouse disappear when over our window
-pygame.mouse.set_visible(0)
+    # Create an 800x600 sized screen
+    screen = pygame.display.set_mode([800, 600])
 
-# This is a font we use to draw text on the screen (size 36)
-font = pygame.font.Font(None, 36)
+    # Set the title of the window
+    pygame.display.set_caption('Pong')
 
-# Create a surface we can draw on
-background = pygame.Surface(screen.get_size())
+    # Enable this to make the mouse disappear when over our window
+    pygame.mouse.set_visible(0)
 
-# Create the ball
-ball = ball.Ball()
-# Create a group of 1 ball (used in checking collisions)
-balls = pygame.sprite.Group()
-balls.add(ball)
+    # This is a font we use to draw text on the screen (size 36)
+    font = pygame.font.Font(None, 36)
 
+    # Create a surface we can draw on
+    background = pygame.Surface(screen.get_size())
 
-# Create the player paddle object
-player1 = player.Player("jweezy","L", 25)
-player2 = player.Player("lol","R", 775)
-
-movingsprites = pygame.sprite.Group()
-movingsprites.add(player1)
-movingsprites.add(player2)
-movingsprites.add(ball)
-
-clock = pygame.time.Clock()
-done = False
-exit_program = False
-game_found = False
-
-while not exit_program:
-
-    # Clear the screen
-    screen.fill(BLACK)
-
-    while not game_found:
-        main_menu.game_intro()
+    # Create the ball
+    ball = ball2.Ball()
+    # Create a group of 1 ball (used in checking collisions)
+    balls = pygame.sprite.Group()
+    balls.add(ball)
 
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            main_menu.quit()
+    # Create the player paddle object
+    player1 = player.Player(player1_name,"L", 25)
+    player2 = player.Player(player2_name,"R", 775)
 
-    keys = pygame.key.get_pressed()  #checking pressed keys
-    if keys[pygame.K_UP]:
-        player2.move(-10)
-    if keys[pygame.K_DOWN]:
-        player2.move(10)
-    if keys[pygame.K_w]:
-        player1.move(-10)
-    if keys[pygame.K_s]:
-        player1.move(10)
+    movingsprites = pygame.sprite.Group()
+    movingsprites.add(player1)
+    movingsprites.add(player2)
+    movingsprites.add(ball)
+
+    clock = pygame.time.Clock()
+    done = False
+    exit_program = False
+
+    while not exit_program:
+
+        # Clear the screen
+        screen.fill(BLACK)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                main_menu.quit()
+
+        keys = pygame.key.get_pressed()  #checking pressed keys
+        if keys[pygame.K_UP]:
+            player2.move(-10)
+        if keys[pygame.K_DOWN]:
+            player2.move(10)
+        if keys[pygame.K_w]:
+            player1.move(-10)
+        if keys[pygame.K_s]:
+            player1.move(10)
 
 
-    # Stop the game if there is an imbalance of 3 points
-    if abs(score1 - score2) > 3:
-        done = True
+        # Stop the game if there is an imbalance of 3 points
+        if abs(score1 - score2) > 3:
+            done = True
 
-    if not done:
-        # Update the player and ball positions
-        player1.update()
-        player2.update()
-        ball.update()
+        if not done:
+            # Update the player and ball positions
+            player1.update()
+            player2.update()
+            ball.update()
 
-    # If we are done, print game over
-    if done:
-        text = font.render("Game Over", 1, (200, 200, 200))
-        textpos = text.get_rect(centerx=background.get_width()/2)
-        textpos.top = 50
+        # If we are done, print game over
+        if done:
+            text = font.render("Game Over", 1, (200, 200, 200))
+            textpos = text.get_rect(centerx=background.get_width()/2)
+            textpos.top = 50
+            screen.blit(text, textpos)
+
+        # See if the ball hits the player paddle
+        if pygame.sprite.spritecollide(player1, balls, False):
+            # The 'diff' lets you try to bounce the ball left or right depending where on the paddle you hit it
+            diff = (player1.rect.x + player1.width/2) - (ball.rect.x+ball.width/2)
+
+            # Set the ball's y position in case we hit the ball on the edge of the paddle
+            ball.player_bounce(player1,diff)
+
+        # See if the ball hits the player paddle
+        if pygame.sprite.spritecollide(player2, balls, False):
+            # The 'diff' lets you try to bounce the ball left or right depending where on the paddle you hit it
+            diff = (player2.rect.x + player2.width/2) - (ball.rect.x+ball.width/2)
+            # Set the ball's y position in case we hit the ball on the edge of the paddle
+            ball.player_bounce(player2,diff)
+
+        # Print the score
+        scoreprint = str(player1_name) + ": "+str(score1)
+        text = font.render(scoreprint, 1, WHITE)
+        textpos = (0, 0)
         screen.blit(text, textpos)
 
-    # See if the ball hits the player paddle
-    if pygame.sprite.spritecollide(player1, balls, False):
-        # The 'diff' lets you try to bounce the ball left or right depending where on the paddle you hit it
-        diff = (player1.rect.x + player1.width/2) - (ball.rect.x+ball.width/2)
+        scoreprint = str(player2_name) + ": "+str(score2)
+        text = font.render(scoreprint, 1, WHITE)
+        textpos = (300, 0)
+        screen.blit(text, textpos)
 
-        # Set the ball's y position in case we hit the ball on the edge of the paddle
-        ball.player_bounce(player1,diff)
+        # Draw Everything
+        movingsprites.draw(screen)
 
-    # See if the ball hits the player paddle
-    if pygame.sprite.spritecollide(player2, balls, False):
-        # The 'diff' lets you try to bounce the ball left or right depending where on the paddle you hit it
-        diff = (player2.rect.x + player2.width/2) - (ball.rect.x+ball.width/2)
-        # Set the ball's y position in case we hit the ball on the edge of the paddle
-        ball.player_bounce(player2,diff)
+        # Update the screen
+        pygame.display.flip()
 
-    # Print the score
-    scoreprint = "Player 1: "+str(score1)
-    text = font.render(scoreprint, 1, WHITE)
-    textpos = (0, 0)
-    screen.blit(text, textpos)
+        score1 = ball.p1_score
+        score2 = ball.p2_score
 
-    scoreprint = "Player 2: "+str(score2)
-    text = font.render(scoreprint, 1, WHITE)
-    textpos = (300, 0)
-    screen.blit(text, textpos)
+        clock.tick(30)
 
-    # Draw Everything
-    movingsprites.draw(screen)
+def first_phase():
+    game_found = False
+    message = "none"
+    while not game_found:
+        game_found, message = main_menu.game_intro(sock)
+        print(message)
+        if message != "none" or message != None:
+            json_message = json.loads(message.replace("b'", '').replace("'", ''))
+        pong(json_message["username_local"], json_message["username_away"], message)
 
-    # Update the screen
-    pygame.display.flip()
-
-    score1 = ball.p1_score
-    score2 = ball.p2_score
-
-    clock.tick(30)
+first_phase()
 
 pygame.quit()

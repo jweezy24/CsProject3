@@ -5,6 +5,7 @@ import socket
 import csv
 import json
 import threading
+
 #most code is from here https://pythonprogramming.net/pygame-start-menu-tutorial/
 pygame.init()
 
@@ -21,17 +22,10 @@ block_color = (53,115,255)
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
-global_message = ''
-
-
-#init networking stuff
-sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock2.bind(("0.0.0.0",0))
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-local_server = ("<broadcast>", 7999)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
+local_server = ("<broadcast>", 7999)
+
+
 
 def read_csv():
     file = open('./config.csv')
@@ -50,19 +44,19 @@ def read_csv():
     return username
 
 
-def send_info():
+def send_info(sock):
     username = read_csv()
     print(username)
     dict = {'op': 'searching', 'username': username}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
-def create_listen_thread():
-    t= threading.Thread(target=listen)
+def create_listen_thread(sock):
+    t= threading.Thread(target=listen, args=(sock, ))
     threads.append(t)
     t.start()
 
-def listen():
+def listen(sock):
     while True:
         message, address = sock.recvfrom(1024)
         threads[0].name = message
@@ -72,8 +66,8 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 
-def game_intro():
-    create_listen_thread()
+def game_intro(sock):
+    create_listen_thread(sock)
     count = 0
     intro = True
     display_searchRect = None
@@ -118,8 +112,11 @@ def game_intro():
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info()
-        print(threads[0].name)
+        send_info(sock)
+        message = threads[0].name
+        if "match made" in message:
+            return(True, message)
+
         pygame.display.update()
         clock.tick(15)
         count+=1

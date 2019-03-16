@@ -87,9 +87,12 @@ class match_maker:
         t.start()
 
     def play_game(self, player1, player2):
-        print("play game nigga")
-        self.server_socket.sendto("reply".encode(), player1[2])
-        self.server_socket.sendto("reply".encode(), player2[2])
+        dict = {"op":"match made", "player": player2[2], "username_local": player1[0], "username_away": player2[0] }
+        dict2 = {"op":"match made", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
+        json_message = json.dumps(dict)
+        json_message2 = json.dumps(dict2)
+        self.server_socket.sendto(json_message2.encode(), player1[2])
+        self.server_socket.sendto(json_message.encode(), player2[2])
 
 server = match_maker()
 
