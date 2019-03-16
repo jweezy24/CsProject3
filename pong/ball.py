@@ -44,8 +44,11 @@ class Ball(pygame.sprite.Sprite):
         # Set the initial ball speed and position
         self.reset()
 
+        self.p1_score = 0
+        self.p2_score = 0
+
     def reset(self):
-        self.x = random.randrange(50,750)
+        self.x = 400
         self.y = 350.0
         self.speed=8.0
 
@@ -58,13 +61,6 @@ class Ball(pygame.sprite.Sprite):
             self.direction += 180
             self.y = 50
 
-    # This function will bounce the ball off a horizontal surface (not a vertical one)
-    def bounce(self,diff):
-        self.direction = (180-self.direction)%360
-        self.direction -= diff
-
-        # Speed the ball up
-        self.speed *= 1.01
 
     def wall_bounce(self):
         self.direction = (180-self.direction)%360
@@ -106,10 +102,10 @@ class Ball(pygame.sprite.Sprite):
 
         # Do we bounce off the left of the screen?
         if self.x <= 0:
-            self.direction = (360-self.direction)%360
-            print(self.direction)
-            #self.x=1
+            self.p2_score += 1
+            self.reset()
 
         # Do we bounce of the right side of the screen?
         if self.x > self.screenwidth-self.width:
-            self.direction = (360-self.direction)%360
+            self.p1_score += 1
+            self.reset()

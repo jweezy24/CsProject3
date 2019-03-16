@@ -122,6 +122,9 @@ while not exit_program:
     # Update the screen
     pygame.display.flip()
 
+    score1 = ball.p1_score
+    score2 = ball.p2_score
+
     clock.tick(30)
 
 pygame.quit()
