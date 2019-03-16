@@ -28,18 +28,34 @@ class match_maker:
         self.parse_json(message)
 
     def parse_json(self,packet):
-        try:
+        #try:
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
                 self.player_queue.append((json_message["username"], json_message))
+                if self.new_player(json_message["username"]):
+                    self.write_player_to_memory(json_message["username"])
 
             print(json_message)
 
-        except NameError:
+        #except NameError:
             print('Incorrect Json format')
 
     def new_player(self, name):
-        pass
+        file = open('./allPlayers.csv')
+        reader = csv.reader(file)
+        for row in reader:
+            for i in row:
+                if name == i:
+                    file.close()
+                    return False
+        file.close()
+        return True
+
+    def write_player_to_memory(self, name):
+        file = open('./allPlayers.csv', 'w')
+        writer = csv.writer(file)
+        writer.writerow(["username", name, "rank", 0])
+        file.close()
 
     def player_in_queue(self, name):
         for i in self.player_queue:
