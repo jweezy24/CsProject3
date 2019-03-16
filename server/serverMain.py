@@ -38,7 +38,7 @@ class match_maker:
             print(json_message)
 
         #except NameError:
-            print('Incorrect Json format')
+            #print('Incorrect Json format')
 
     def new_player(self, name):
         file = open('./allPlayers.csv')
@@ -51,11 +51,20 @@ class match_maker:
         file.close()
         return True
 
+
     def write_player_to_memory(self, name):
-        file = open('./allPlayers.csv', 'w')
-        writer = csv.writer(file)
+        rows = []
+        old_csv = open('./allPlayers.csv', newline='')
+        reader = csv.reader(old_csv)
+        for row in reader:
+            rows.append(row)
+        old_csv.close()
+        csv_file = open('./allPlayers.csv', 'w', newline='')
+        writer = csv.writer(csv_file)
+        for i in rows:
+            writer.writerow(i)
         writer.writerow(["username", name, "rank", 0])
-        file.close()
+        csv_file.close()
 
     def player_in_queue(self, name):
         for i in self.player_queue:
