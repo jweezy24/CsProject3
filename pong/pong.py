@@ -92,9 +92,9 @@ def pong(player1_name, player2_name, message):
 
         keys = pygame.key.get_pressed()  #checking pressed keys
         if keys[pygame.K_w]:
-            dict_message["movement"] = 10
+            dict_message["move"] = 10
         if keys[pygame.K_s]:
-            dict_message["movement"] = -10
+            dict_message["move"] = -10
 
 
         # Stop the game if there is an imbalance of 3 points
