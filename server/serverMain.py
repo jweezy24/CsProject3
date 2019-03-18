@@ -40,7 +40,6 @@ class match_maker:
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
-            print(json_message)
 
         except NameError:
             print('Incorrect Json format')
@@ -93,6 +92,8 @@ class match_maker:
         dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
         json_message = json.dumps(dict)
         json_message2 = json.dumps(dict2)
+        print(player1)
+        print(player2)
         self.server_socket.sendto(json_message2.encode(), player1[2])
         print("one mesage sent")
         self.server_socket.sendto(json_message.encode(), player2[2])
@@ -101,7 +102,6 @@ class match_maker:
             send_out = {'local_movement': 0, 'away_movement': 0}
             message, address = self.lobby_socket.recvfrom(1024)
             json_message = json.loads(message)
-            print(message)
             if address == player1[2]:
                 send_out["away_movement"] = int(json_message["move"])
                 json_message_temp = json.dumps(send_out)
