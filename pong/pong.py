@@ -166,7 +166,10 @@ def pong(player1_name, player2_name, message, game_server):
 
 def first_phase():
     game_found = False
+    in_menu = True
     message = "none"
+    while in_menu:
+        in_menu = main_menu.menu()
     while not game_found:
         game_found, message = main_menu.game_intro(sock,sock2)
         print(message)
