@@ -65,7 +65,7 @@ def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
-def button(msg,x,y,w,h,ic,ac):
+def button(msg,x,y,w,h,ic,ac,action):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     print(click)
@@ -73,15 +73,48 @@ def button(msg,x,y,w,h,ic,ac):
         pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
 
         if click[0] == 1:
-            return False
+                return action()
     else:
         pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
 
-    smallText = pygame.font.SysFont("freesansbold.ttf",20)
+    smallText = pygame.font.SysFont("freesansbold.ttf",30)
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     gameDisplay.blit(textSurf, textRect)
     return True
+
+def back_to_menu():
+    return False
+
+def settingsloop():
+
+    bright_red = (255,0,0)
+    red = (200,0,0)
+    settings = True
+
+    while settings:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+        gameDisplay.fill(white)
+        largeText = pygame.font.Font('freesansbold.ttf',115)
+        TextSurf, TextRect = text_objects("Settings", largeText)
+        TextRect.center = ((display_width/2),(display_height/4))
+        gameDisplay.blit(TextSurf, TextRect)
+
+        mouse = pygame.mouse.get_pos()
+
+        settings = button("Back",(display_width/2)-100,280,200,50,red,bright_red,back_to_menu)
+
+        pygame.display.update()
+        clock.tick(15)
+
+    return True
+
+def start():
+    return False
 
 def menu():
 
@@ -97,17 +130,19 @@ def menu():
                 quit()
         gameDisplay.fill(white)
         largeText = pygame.font.Font('freesansbold.ttf',115)
-        TextSurf, TextRect = text_objects("Click start", largeText)
-        TextRect.center = ((display_width/2),(display_height/2))
+        TextSurf, TextRect = text_objects("Pong Online", largeText)
+        TextRect.center = ((display_width/2),(display_height/4))
         gameDisplay.blit(TextSurf, TextRect)
 
         mouse = pygame.mouse.get_pos()
 
-        intro = button("Start",150,450,100,50,green,bright_green)
+        button("Settings",(display_width/2)-100,400,200,50,green,bright_green,settingsloop)
+        intro = button("Start",(display_width/2)-100,340,200,50,green,bright_green,start)
 
         pygame.display.update()
         clock.tick(15)
-        return (intro)
+
+    return (intro)
 
 def game_intro(sock):
     create_listen_thread(sock)
