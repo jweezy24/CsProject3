@@ -2,22 +2,22 @@
 
 authors: Jack Broncato, Drew Mack, Jack West
 
-# Introduction
+# 1 Introduction
 
-# 1 Purpose
+# 1.1 Purpose
 This document is for the program Pong Online, a 2 player game of Pong playable over the internet.
 
-# 1.1 Document Conventions
+# 1.2 Document Conventions
 Priorities  for higher-level requirements are assumed to be inherited by detailed requirements.
 
-# 1.2 Intended Audience and Reading Suggestions
+# 1.3 Intended Audience and Reading Suggestions
 This document is intended for developers hoping to understand the program well enough to contribute functionality to it.
 
-# 1.3 Product Scope
+# 1.4 Product Scope
 The product Pong online is a program meant to connect people who want to play Pong to each other. The objective is to make a program that someone who wants to play Pong can boot up and connect to someone else to play against them. This program would give all the Pong players of the world enjoyment.
 
-# 1.4 References
-No references at this point in time, but will likely look up syling guide for UI/Syncing.
+# 1.5 References
+No references at this point in time, but will likely look up styling guide for UI, as well as examples of Syncing.
 
 # 2 Overall Description
 
@@ -45,9 +45,9 @@ Since the concept and app is somewhat simple, there are many available options f
 Software use documentation will be provided for testing instructions with the finished product.
 
 # 2.7 Assumptions and Dependencies
-Assumptions include: 
+Assumptions include:
 - Dilligent teamwork with everyone doing a certain amount of work each week.
-- Ability to connect people with a server machine that will be running consistently. 
+- Ability to connect people with a server machine that will be running consistently.
 - Decent syncing with peer to peer connection.
 
 # 3 External Interface Requirements
@@ -63,4 +63,3 @@ The Software interfaces we will be using will be Pygame for making the game in P
 
 # 3.4 Communications Interfaces
 This software will use socket programming for sending/recieving packets to peers.
-
