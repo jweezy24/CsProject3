@@ -15,7 +15,6 @@ sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock2.bind(("0.0.0.0",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-local_server = ("<broadcast>", 7999)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
@@ -30,7 +29,8 @@ def create_listen_thread():
 
 def listen():
     while True:
-        message, address = sock.recvfrom(1024)
+        message, address = sock2.recvfrom(1024)
+        print("fuck")
         threads[0].name = message
 
 def pong(player1_name, player2_name, message, game_server):
