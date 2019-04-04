@@ -20,7 +20,7 @@ threads = []
 
 def send_info(json_message,game_server):
     print(game_server)
-    sock2.sendto(str(json_message).encode(), game_server)
+    sock.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
     t= threading.Thread(target=listen)
