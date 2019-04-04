@@ -12,6 +12,7 @@ import threading
 
 #init networking stuff
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock2.bind(("",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -20,7 +21,7 @@ threads = []
 
 def send_info(json_message,game_server):
     print(game_server)
-    sock.sendto(str(json_message).encode(), game_server)
+    sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
 
 def create_listen_thread():
     t= threading.Thread(target=listen)
