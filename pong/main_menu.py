@@ -47,7 +47,7 @@ def read_csv():
 def send_info(sock, sock2):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username, 'ip':(sock.getsockname()[0],sock2.getsockname()[1])}
+    dict = {'op': 'searching', 'username': username, 'ip':(socket.gethostbyname(socket.gethostname()),sock2.getsockname()[1])}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
