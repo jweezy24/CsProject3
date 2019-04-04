@@ -108,7 +108,7 @@ def pong(player1_name, player2_name, message, game_server):
             if 'update' in threads[0].name:
                 print("here")
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
-                if josn_message['op'] == 'update':
+                if json_message['op'] == 'update':
                     print("here")
                     json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
                     print(json_message)
