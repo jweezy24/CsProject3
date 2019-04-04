@@ -51,8 +51,8 @@ def send_info(sock, sock2):
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
-def create_listen_thread(sock):
-    t= threading.Thread(target=listen, args=(sock, ))
+def create_listen_thread(sock,sock2):
+    t= threading.Thread(target=listen, args=(sock, sock2, ))
     threads.append(t)
     t.start()
 
