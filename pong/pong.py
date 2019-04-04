@@ -107,6 +107,7 @@ def pong(player1_name, player2_name, message):
             print(threads[0].name)
             if "local_" in threads[0].name:
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
+                print(json_message)
                 player1.move(json_message["local_movement"])
                 player2.move(json_message["away_movement"])
             player1.update()
