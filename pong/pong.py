@@ -20,7 +20,7 @@ threads = []
 
 def send_info(json_message,game_server):
     print(game_server)
-    sock.sendto(str(json_message).encode(), game_server)
+    sock2.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
     t= threading.Thread(target=listen)
@@ -29,7 +29,7 @@ def create_listen_thread():
 
 def listen():
     while True:
-        message, address = sock.recvfrom(1024)
+        message, address = sock2.recvfrom(1024)
         print("fuck")
         threads[0].name = message
 
@@ -167,7 +167,7 @@ def first_phase():
     game_found = False
     message = "none"
     while not game_found:
-        game_found, message = main_menu.game_intro(sock)
+        game_found, message = main_menu.game_intro(sock,sock2)
         print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))

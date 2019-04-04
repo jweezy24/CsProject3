@@ -44,10 +44,10 @@ def read_csv():
     return username
 
 
-def send_info(sock):
+def send_info(sock, sock2):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username}
+    dict = {'op': 'searching', 'username': username, 'ip':sock2.getsockname()}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
@@ -66,8 +66,8 @@ def text_objects(text, font):
     return textSurface, textSurface.get_rect()
 
 
-def game_intro(sock):
-    create_listen_thread(sock)
+def game_intro(sock,sock2):
+    create_listen_thread(sock,sock2)
     count = 0
     intro = True
     display_searchRect = None

@@ -36,7 +36,7 @@ class match_maker:
         try:
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
-                self.player_queue.append((json_message["username"], json_message, address))
+                self.player_queue.append((json_message["username"], json_message, (json_message["ip"][0], json_message["ip"][1])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
