@@ -16,11 +16,11 @@ sock2.bind(("0.0.0.0",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 local_server = ("<broadcast>", 7999)
-game_server = ("<broadcast>", 8001)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
-def send_info(json_message):
+def send_info(json_message,game_server):
+    print(game_server)
     sock.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
@@ -33,7 +33,7 @@ def listen():
         message, address = sock.recvfrom(1024)
         threads[0].name = message
 
-def pong(player1_name, player2_name, message):
+def pong(player1_name, player2_name, message, game_server):
     create_listen_thread()
     dict_message = {"op" :"update", "move": 0}
     BLACK = (0 ,0, 0)
@@ -103,13 +103,15 @@ def pong(player1_name, player2_name, message):
 
         if not done:
             # Update the player and ball positions
-            send_info(json.dumps(dict_message))
+            send_info(json.dumps(dict_message),game_server)
             print(threads[0].name)
-            if "local_" in threads[0].name:
+            json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
+            if josn_message['op'] == 'update':
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
                 print(json_message)
-                player1.move(json_message["local_movement"])
-                player2.move(json_message["away_movement"])
+                player1.move(dict_message['move'])
+                player2.move(json_message["move"])
+                dict_message['move'] = 0
             player1.update()
             player2.update()
             ball.update()
@@ -166,7 +168,10 @@ def first_phase():
         print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        pong(json_message["username_local"], json_message["username_away"], message)
+        print(json_message['player'])
+        game_server = (json_message['player'][0], json_message['player'][1])
+        pong(json_message["username_local"], json_message["username_away"], message, game_server)
+
 
 first_phase()
 

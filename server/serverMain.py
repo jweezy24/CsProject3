@@ -113,11 +113,11 @@ class match_maker:
     #             json_message_temp = json.dumps(send_out)
     #             self.lobby_socket.sendto(json_message_temp.encode(), player1[2])
 
-    def play_game(player1, player2):
-        dict = {"op":" match made ", "player": player2[2]}
-        dict2 = {"op":" match made ", "player": player1[2]}
-        send_out_1 = json.loads(dict)
-        send_out_2 = json.loads(dict2)
+    def play_game(self,player1, player2):
+        dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0]}
+        dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
+        send_out_1 = json.dumps(dict)
+        send_out_2 = json.dumps(dict2)
         self.lobby_socket.sendto(send_out_1.encode(), player1[2])
         self.lobby_socket.sendto(send_out_2.encode(), player2[2])
 
