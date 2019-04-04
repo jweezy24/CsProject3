@@ -29,7 +29,7 @@ def create_listen_thread():
 
 def listen():
     while True:
-        message, address = sock2.recvfrom(1024)
+        message, address = sock.recvfrom(1024)
         print("fuck")
         threads[0].name = message
 

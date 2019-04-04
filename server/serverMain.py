@@ -77,6 +77,7 @@ class match_maker:
         return False
 
     def match_players(self):
+        print(self.player_queue)
         if len(self.player_queue) >=2:
             self.create_lobby(self.player_queue.pop(), self.player_queue.pop())
 
@@ -118,6 +119,7 @@ class match_maker:
         dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
         send_out_1 = json.dumps(dict)
         send_out_2 = json.dumps(dict2)
+        print(self.lobbies)
         self.lobby_socket.sendto(send_out_1.encode(), player1[2])
         self.lobby_socket.sendto(send_out_2.encode(), player2[2])
 
