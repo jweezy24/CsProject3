@@ -114,7 +114,7 @@ def pong(player1_name, player2_name, message, game_server):
                     print(json_message)
                     player1.move(dict_message['move'])
                     player2.move(json_message["move"])
-                    dict_message['move'] = 0
+            dict_message['move'] = 0
             player1.update()
             player2.update()
             ball.update()
