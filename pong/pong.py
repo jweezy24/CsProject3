@@ -30,7 +30,7 @@ def create_listen_thread():
 def listen():
     while True:
         message, address = sock2.recvfrom(1024)
-        print("fuck")
+        print(sock2.getsockname())
         threads[0].name = message
 
 def pong(player1_name, player2_name, message, game_server):
