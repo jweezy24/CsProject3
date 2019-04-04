@@ -105,13 +105,16 @@ def pong(player1_name, player2_name, message, game_server):
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
             print(threads[0].name)
-            json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
-            if josn_message['op'] == 'update':
+            if 'update' in threads[0].name:
+                print("here")
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
-                print(json_message)
-                player1.move(dict_message['move'])
-                player2.move(json_message["move"])
-                dict_message['move'] = 0
+                if josn_message['op'] == 'update':
+                    print("here")
+                    json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
+                    print(json_message)
+                    player1.move(dict_message['move'])
+                    player2.move(json_message["move"])
+                    dict_message['move'] = 0
             player1.update()
             player2.update()
             ball.update()
