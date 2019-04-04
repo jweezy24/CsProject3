@@ -51,8 +51,8 @@ def send_info(sock, sock2):
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
-def create_listen_thread(sock,sock2):
-    t= threading.Thread(target=listen, args=(sock, sock2, ))
+def create_listen_thread(sock):
+    t= threading.Thread(target=listen, args=(sock, ))
     threads.append(t)
     t.start()
 
@@ -67,7 +67,7 @@ def text_objects(text, font):
 
 
 def game_intro(sock,sock2):
-    create_listen_thread(sock,sock2)
+    create_listen_thread(sock)
     count = 0
     intro = True
     display_searchRect = None
@@ -112,7 +112,7 @@ def game_intro(sock,sock2):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock)
+        send_info(sock,sock2)
         message = threads[0].name
         if "match made" in message:
             return(True, message)
