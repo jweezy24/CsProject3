@@ -67,7 +67,7 @@ def text_objects(text, font):
 
 
 def game_intro(sock,sock2):
-    create_listen_thread(sock)
+    create_listen_thread(sock2)
     count = 0
     intro = True
     display_searchRect = None

@@ -34,9 +34,10 @@ class match_maker:
 
     def parse_json(self,packet,address):
         try:
+            print(address)
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
-                self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"][1])))
+                self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
@@ -119,7 +120,8 @@ class match_maker:
         dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
         send_out_1 = json.dumps(dict)
         send_out_2 = json.dumps(dict2)
-        print(self.lobbies)
+        print(str(player1[2]) + "HERE")
+        print(str(player2[2]) + "HERE")
         self.lobby_socket.sendto(send_out_1.encode(), player1[2])
         self.lobby_socket.sendto(send_out_2.encode(), player2[2])
 
