@@ -12,7 +12,7 @@ import threading
 
 #init networking stuff
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock2.bind(("localhost",0))
+sock2.bind(("",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
