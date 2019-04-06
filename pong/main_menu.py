@@ -44,10 +44,10 @@ def read_csv():
     return username
 
 
-def send_info(sock):
+def send_info(sock, sock2):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username}
+    dict = {'op': 'searching', 'username': username, 'port':sock2.getsockname()[1]}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
@@ -144,8 +144,8 @@ def menu():
 
     return (intro)
 
-def game_intro(sock):
-    create_listen_thread(sock)
+def game_intro(sock,sock2):
+    create_listen_thread(sock2)
     count = 0
     intro = True
     display_searchRect = None
@@ -190,7 +190,7 @@ def game_intro(sock):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock)
+        send_info(sock,sock2)
         message = threads[0].name
         if "match made" in message:
             return(True, message)

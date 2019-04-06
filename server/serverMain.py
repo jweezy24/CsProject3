@@ -34,9 +34,10 @@ class match_maker:
 
     def parse_json(self,packet,address):
         try:
+            print(address)
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
-                self.player_queue.append((json_message["username"], json_message, address))
+                self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
@@ -77,6 +78,7 @@ class match_maker:
         return False
 
     def match_players(self):
+        print(self.player_queue)
         if len(self.player_queue) >=2:
             self.create_lobby(self.player_queue.pop(), self.player_queue.pop())
 
@@ -87,30 +89,41 @@ class match_maker:
         self.lobbies.append(("playing", player1, player2))
         t.start()
 
-    def play_game(self, player1, player2):
-        dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0] }
-        dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
-        json_message = json.dumps(dict)
-        json_message2 = json.dumps(dict2)
-        print(player1)
-        print(player2)
-        self.server_socket.sendto(json_message2.encode(), player1[2])
-        print("one mesage sent")
-        self.server_socket.sendto(json_message.encode(), player2[2])
-        print("second message sent")
-        while True:
-            send_out = {'local_movement': 0, 'away_movement': 0}
-            message, address = self.lobby_socket.recvfrom(1024)
-            json_message = json.loads(message)
-            if address == player1[2]:
-                send_out["away_movement"] = int(json_message["move"])
-                json_message_temp = json.dumps(send_out)
-                self.lobby_socket.sendto(json_message_temp.encode(), player2[2])
-                send_out["away_movement"] = 0
-                send_out["local_movement"] = int(json_message["move"])
-                json_message_temp = json.dumps(send_out)
-                self.lobby_socket.sendto(json_message_temp.encode(), player1[2])
 
+    #commented out central server model
+    # def play_game(self, player1, player2):
+    #     dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0] }
+    #     dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
+    #     json_message = json.dumps(dict)
+    #     json_message2 = json.dumps(dict2)
+    #     print(player1)
+    #     print(player2)
+    #     self.server_socket.sendto(json_message2.encode(), player1[2])
+    #     print("one mesage sent")
+    #     self.server_socket.sendto(json_message.encode(), player2[2])
+    #     print("second message sent")
+    #     while True:
+    #         send_out = {'local_movement': 0, 'away_movement': 0}
+    #         message, address = self.lobby_socket.recvfrom(1024)
+    #         json_message = json.loads(message)
+    #         if address == player1[2]:
+    #             send_out["away_movement"] = int(json_message["move"])
+    #             json_message_temp = json.dumps(send_out)
+    #             self.lobby_socket.sendto(json_message_temp.encode(), player2[2])
+    #             send_out["away_movement"] = 0
+    #             send_out["local_movement"] = int(json_message["move"])
+    #             json_message_temp = json.dumps(send_out)
+    #             self.lobby_socket.sendto(json_message_temp.encode(), player1[2])
+
+    def play_game(self,player1, player2):
+        dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0]}
+        dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
+        send_out_1 = json.dumps(dict)
+        send_out_2 = json.dumps(dict2)
+        print(str(player1[2]) + "HERE")
+        print(str(player2[2]) + "HERE")
+        self.lobby_socket.sendto(send_out_1.encode(), player1[2])
+        self.lobby_socket.sendto(send_out_2.encode(), player2[2])
 
 server = match_maker()
 
