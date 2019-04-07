@@ -20,7 +20,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
 def send_info(json_message,game_server):
-    print(game_server)
+    #print(game_server)
     sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
 
 def create_listen_thread():
@@ -31,7 +31,7 @@ def create_listen_thread():
 def listen():
     while True:
         message, address = sock2.recvfrom(1024)
-        print(sock2.getsockname())
+        #print(sock2.getsockname())
         threads[0].name = message
 
 def pong(player1_name, player2_name, message, game_server):
@@ -105,14 +105,14 @@ def pong(player1_name, player2_name, message, game_server):
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
-            print(threads[0].name)
+            #print(threads[0].name)
             if 'update' in threads[0].name:
-                print("here")
+                #print("here")
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
                 if json_message['op'] == 'update':
-                    print("here")
+                    #print("here")
                     json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
-                    print(json_message)
+                    #print(json_message)
                     player1.move(dict_message['move'])
                     player2.move(json_message["move"])
             dict_message['move'] = 0
@@ -179,7 +179,7 @@ def first_phase():
         game_server = (json_message['player'][0], json_message['player'][1])
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
 
+if __name__ == '__main__':
+    first_phase()
 
-first_phase()
-
-pygame.quit()
+    pygame.quit()

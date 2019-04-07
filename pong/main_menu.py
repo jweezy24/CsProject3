@@ -68,7 +68,7 @@ def text_objects(text, font):
 def button(msg,x,y,w,h,ic,ac,action):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    print(click)
+    #print(click)
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
 
@@ -94,7 +94,7 @@ def settingsloop():
 
     while settings:
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -106,6 +106,7 @@ def settingsloop():
 
         mouse = pygame.mouse.get_pos()
 
+        visual = button("Visual",(display_width/2)-100,280,200,50,red,bright_red)
         settings = button("Back",(display_width/2)-100,280,200,50,red,bright_red,back_to_menu)
 
         pygame.display.update()
@@ -124,7 +125,7 @@ def menu():
 
     while intro:
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -152,7 +153,7 @@ def game_intro(sock,sock2):
     display_searchSurf = None
     while intro:
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
