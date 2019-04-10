@@ -5,6 +5,9 @@ import socket
 import csv
 import json
 import threading
+import pygame_textinput
+import shelve
+
 
 #most code is from here https://pythonprogramming.net/pygame-start-menu-tutorial/
 pygame.init()
@@ -25,7 +28,21 @@ clock = pygame.time.Clock()
 threads = []
 local_server = ("<broadcast>", 7999)
 
-
+def readrank_csv():
+    file = open('./config.csv')
+    reader = csv.reader(file)
+    ranking = 'NOT_FOUND'
+    val_found = False
+    for row in reader:
+        for item in row:
+            if item == 'ranking':
+                val_found = True
+                continue
+            if val_found:
+                ranking = item
+                val_found = False
+    file.close()
+    return ranking
 
 def read_csv():
     file = open('./config.csv')
@@ -44,10 +61,10 @@ def read_csv():
     return username
 
 
-def send_info(sock, sock2):
+def send_info(sock):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username, 'port':sock2.getsockname()[1]}
+    dict = {'op': 'searching', 'username': username}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
@@ -91,9 +108,14 @@ def settingsloop():
     bright_red = (255,0,0)
     red = (200,0,0)
     settings = True
+    changeUsername = True
+    textinput = pygame_textinput.TextInput()
+    d = shelve.open("userdetails", writeback=True)
+    Username = d["username"]
 
     while settings:
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -104,13 +126,31 @@ def settingsloop():
         TextRect.center = ((display_width/2),(display_height/4))
         gameDisplay.blit(TextSurf, TextRect)
 
+        largeText = pygame.font.Font('freesansbold.ttf',30)
+        TextSurfer, TextRecter = text_objects("Current Username: " + Username, largeText)
+        TextRecter.center = ((display_width/2),(display_height/2))
+        gameDisplay.blit(TextSurfer, TextRecter)
+
+        if textinput.update(events):
+            Username = textinput.get_text()
+            d["username"] = Username
+
+        gameDisplay.blit(textinput.get_surface(), (display_width/2-100,450))
+
         mouse = pygame.mouse.get_pos()
 
-        settings = button("Back",(display_width/2)-100,280,200,50,red,bright_red,back_to_menu)
+        settings = button("Back",(display_width)-220,540,200,50,red,bright_red,back_to_menu)
+        changeUsername = button("Change name",(display_width/2)-100,500,200,50,red,bright_red,back_to_menu)
+
+        if not changeUsername:
+            Username = textinput.get_text()
+            d["username"] = Username
+            changeUsername = True
 
         pygame.display.update()
         clock.tick(15)
 
+    d.close()
     return True
 
 def start():
@@ -144,8 +184,8 @@ def menu():
 
     return (intro)
 
-def game_intro(sock,sock2):
-    create_listen_thread(sock2)
+def game_intro(sock):
+    create_listen_thread(sock)
     count = 0
     intro = True
     display_searchRect = None
@@ -190,7 +230,7 @@ def game_intro(sock,sock2):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock,sock2)
+        send_info(sock)
         message = threads[0].name
         if "match made" in message:
             return(True, message)
