@@ -127,15 +127,21 @@ def settingsloop():
         gameDisplay.blit(TextSurf, TextRect)
 
         largeText = pygame.font.Font('freesansbold.ttf',30)
-        TextSurfer, TextRecter = text_objects("Current Username: " + Username, largeText)
+        TextSurfer, TextRecter = text_objects("Username: " + Username, largeText)
         TextRecter.center = ((display_width/2),(display_height/2))
         gameDisplay.blit(TextSurfer, TextRecter)
+
+        #drawing box around text input
+        pygame.draw.rect(gameDisplay,(255,0,0),(300,433,200,10))
+        pygame.draw.rect(gameDisplay,(255,0,0),(300,480,200,10))
+        pygame.draw.rect(gameDisplay,(255,0,0),(300,433,10,50))
+        pygame.draw.rect(gameDisplay,(255,0,0),(490,433,10,50))
 
         if textinput.update(events):
             Username = textinput.get_text()
             d["username"] = Username
 
-        gameDisplay.blit(textinput.get_surface(), (display_width/2-100,450))
+        gameDisplay.blit(textinput.get_surface(), (display_width/2-90,450))
 
         mouse = pygame.mouse.get_pos()
 
