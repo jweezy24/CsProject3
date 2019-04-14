@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, username, side, pos):
         self.username = username
         self.side = side
-        self.position = 0
+        self.position = pos
         self.score = 0
         self.width = 15
         self.height = 75
