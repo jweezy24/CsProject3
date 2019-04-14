@@ -17,7 +17,17 @@ class TestPlayerMethods(unittest.TestCase):
         self.assertTrue(self.player.y == holder+10)
 
     def test_update(self):
-        pass
+        holderRect = self.player.rect.y
+        holderY = self.player.y
+        self.assertTrue(self.player.rect.y == holderRect)
+        self.assertFalse(self.player.rect.y != holderY)
+        self.player.update()
+        self.assertTrue(self.player.rect.y == holderY)
 
+    def test_update_score(self):
+        holder = self.player.score
+        self.assertTrue(self.player.score == holder)
+        self.player.update_score()
+        self.assertTrue(self.player.score == holder+1)
 
 unittest.main()
