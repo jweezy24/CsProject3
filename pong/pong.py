@@ -176,7 +176,6 @@ def first_phase():
         game_server = (json_message['player'][0], json_message['player'][1])
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
 
-
-first_phase()
-
-pygame.quit()
+if __name__ == '__main__':
+    first_phase()
+    pygame.quit()

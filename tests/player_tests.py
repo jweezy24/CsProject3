@@ -1,7 +1,7 @@
 import unittest
 import sys
-sys.path.insert(0, '../pong')
-import player
+sys.path.insert(0, '..')
+import pong.player as player
 class TestPlayerMethods(unittest.TestCase):
     def setUp(self):
         self.player = player.Player('test','L', 100)
@@ -16,6 +16,9 @@ class TestPlayerMethods(unittest.TestCase):
         self.assertTrue(self.player.y == holder)
         self.player.move(10)
         self.assertTrue(self.player.y == holder+10)
+
+    def test_update(self):
+        pass
 
 
 unittest.main()

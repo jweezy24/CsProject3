@@ -1,7 +1,6 @@
 import math
 import pygame
 import random
-import player as Player
 
 # Define some colors
 BLACK = (0 ,0, 0)
