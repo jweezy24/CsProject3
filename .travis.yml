@@ -1,8 +1,9 @@
 language: python
 python:
   - "3.6"
+before_install:
+    - export PYTHONPATH=$PYTHONPATH:$(pwd)
 install:
   - pip install -r requirements.txt
 script:
-  - cd pong && python3 __init__.py && cd ..
   - python3 ./tests/player_tests.py
