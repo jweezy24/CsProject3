@@ -1,6 +1,5 @@
 import unittest
 import sys
-sys.path.insert(0, '..')
 import pong.player as player
 class TestPlayerMethods(unittest.TestCase):
     def setUp(self):
