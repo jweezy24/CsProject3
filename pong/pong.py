@@ -20,6 +20,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
 local_username = ''
+packet = ''
 
 def send_info(json_message,game_server):
     print(game_server)
@@ -31,10 +32,11 @@ def create_listen_thread():
     t.start()
 
 def listen():
+    global packet
     while True:
         message, address = sock2.recvfrom(1024)
         print(sock2.getsockname())
-        threads[0].name = message
+        packet = message
 
 def pong(player1_name, player2_name, message, game_server):
     create_listen_thread()
@@ -108,12 +110,12 @@ def pong(player1_name, player2_name, message, game_server):
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
             #print(threads[0].name)
-            if 'update' in threads[0].name:
+            if 'update' in packet:
                 #print("here")
-                json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
+                json_message = json.loads(packet.replace("b'", '').replace("'", ''))
                 if json_message['op'] == 'update':
                     #print("here")
-                    json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
+                    json_message = json.loads(packet.replace("b'", '').replace("'", ''))
                     print(local_username + "here")
                     if player1_name == local_username:
                         player1.move(dict_message['move'])
