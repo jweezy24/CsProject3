@@ -123,7 +123,7 @@ class match_maker:
         print(str(player1[2]) + "HERE")
         print(str(player2[2]) + "HERE")
         self.lobby_socket.sendto(send_out_1.encode(), player1[2])
-        time.sleep(.03)
+        time.sleep(.1)
         self.lobby_socket.sendto(send_out_2.encode(), player2[2])
 
 server = match_maker()
