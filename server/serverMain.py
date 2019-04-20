@@ -46,6 +46,7 @@ class match_maker:
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
             if json_message["op"] == "game_over":
+                print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
 
 
