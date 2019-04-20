@@ -53,7 +53,7 @@ def send_start(game_server):
         message,address = sock2.recvfrom(1024)
         if b'start' in message:
             start = True
-    except Error as e:
+    except Exception as e:
         print(e)
 
 def send_info(json_message,game_server):
