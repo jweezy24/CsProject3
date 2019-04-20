@@ -138,6 +138,8 @@ def pong(player1_name, player2_name, message, game_server):
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
+                    pygame.quit()
+                    main_menu.quit()
             else:
                 victory_json.update({"winner":player2_name})
                 victory_json.update({"loser":player1_name})
@@ -145,6 +147,8 @@ def pong(player1_name, player2_name, message, game_server):
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
+                    pygame.quit()
+                    main_menu.quit()
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
