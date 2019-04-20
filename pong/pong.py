@@ -41,7 +41,7 @@ packet = ''
 
 def send_info(json_message,game_server):
     #print(game_server)
-    sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
+    sock.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
     t= threading.Thread(target=listen)
@@ -148,7 +148,7 @@ def pong(player1_name, player2_name, message, game_server):
                         player2.update()
                         ball.update()
             else:
-                print("packet not recieved")
+                #print("packet not recieved")
                 if player1_name == local_username:
                     player1.move(dict_message['move'])
                 else:
@@ -205,12 +205,15 @@ def first_phase():
     global local_username
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
-        #print(message)
+        message = str(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        game_server = (json_message['player'][0], json_message['player'][1])
         local_username = username
-        pong(json_message["username_local"], json_message["username_away"], message, game_server)
+        if username == json_message["username1"][0]:
+            game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
+        else:
+            game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
+        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
     first_phase()
