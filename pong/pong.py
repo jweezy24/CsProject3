@@ -148,7 +148,7 @@ def pong(player1_name, player2_name, message, game_server):
                         player2.update()
                         ball.update()
             else:
-                print("packet not recieved")
+                #print("packet not recieved")
                 if player1_name == local_username:
                     player1.move(dict_message['move'])
                 else:
@@ -210,10 +210,13 @@ def first_phase():
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
         local_username = username
+        print(username + "username")
         if username == json_message["username1"]:
             game_server = json_message["username2"][1]
+            print(json_message["username2"][1]+ " game server")
         else:
             game_server = json_message["username1"][1]
+            print(json_message["username2"][1]+ " game server")
         pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
