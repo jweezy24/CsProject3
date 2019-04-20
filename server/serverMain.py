@@ -124,7 +124,7 @@ class match_maker:
         dict2 = {"op":" match made ", "player": player1[2], "local_name": player2[0], "username_local": player1[0], "username_away": player2[0], "sleep":0}
         send_out_1 = json.dumps(dict)
         send_out_2 = json.dumps(dict2)
-        self.cast_sock(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
+        self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
 server = match_maker()
 
