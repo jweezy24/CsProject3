@@ -21,6 +21,7 @@ threads = []
 
 local_username = ''
 packet = ''
+condition = threading.Condition()
 
 def send_info(json_message,game_server):
     #print(game_server)
@@ -29,10 +30,10 @@ def send_info(json_message,game_server):
 def create_listen_thread():
     t= threading.Thread(target=listen)
     threads.append(t)
-    t.daemon = True
     t.start()
 
 def listen():
+    global packet
     while True:
         message, address = sock2.recvfrom(1024)
         print(sock2.getsockname())
@@ -124,6 +125,12 @@ def pong(player1_name, player2_name, message, game_server):
                     else:
                         player2.move(dict_message['move'])
                         player1.move(json_message["move"])
+            else:
+                print("packet not recieved")
+                if player1_name == local_username:
+                    player1.move(dict_message['move'])
+                else:
+                    player2.move(dict_message['move'])
             dict_message['move'] = 0
             player1.update()
             player2.update()
