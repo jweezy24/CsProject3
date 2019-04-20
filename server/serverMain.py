@@ -117,7 +117,7 @@ class match_maker:
 
     def play_game(self,player1, player2):
         dict = {"op":" match made ", "player": player1[2], "local_name": player1[0], "username_local": player1[0], "username_away": player2[0]}
-        dict2 = {"op":" match made ", "player": player2[2], "local_name": player2[2], "username_local": player1[0], "username_away": player2[0]}
+        dict2 = {"op":" match made ", "player": player2[2], "local_name": player2[0], "username_local": player1[0], "username_away": player2[0]}
         send_out_1 = json.dumps(dict)
         send_out_2 = json.dumps(dict2)
         print(str(player1[2]) + "HERE")
