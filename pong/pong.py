@@ -128,21 +128,22 @@ def pong(player1_name, player2_name, message, game_server):
         # Stop the game if there is an imbalance of 3 points
         if abs(score1 - score2) > 3:
             victory_json = {"op":"game_over", "winner":'', "loser":''}
+            print("in victory packet")
             done = True
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
-                victory_json.update({"winner":player1})
-                victory_json.update({"loser":player2})
+                victory_json.update({"winner":player1_name})
+                victory_json.update({"loser":player2_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
-                if local_username == player1:
+                if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
             else:
-                victory_json.update({"winner":player2})
-                victory_json.update({"loser":player1})
+                victory_json.update({"winner":player2_name})
+                victory_json.update({"loser":player1_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
-                if local_username == player1:
+                if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
         if not done:
             # Update the player and ball positions
