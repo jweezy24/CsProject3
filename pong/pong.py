@@ -209,9 +209,12 @@ def first_phase():
         #print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        game_server = (json_message['player'][0], json_message['player'][1])
         local_username = username
-        pong(json_message["username_local"], json_message["username_away"], message, game_server)
+        if username == json_message["username1"]:
+            game_server = json_message["username2"][1]
+        else:
+            game_server = json_message["username2"][1]
+        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
     first_phase()
