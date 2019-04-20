@@ -109,9 +109,10 @@ class match_maker:
         for i in range(0,len(rows)):
             if rows[i][1] == winner:
                 #adding the game to the user
-                rows[i][5] = rows[i][5]+1
+                print(row[i][5])
+                rows[i][5] = str(int(rows[i][5])+1)
                 #adding a win for the user
-                rows[i][9] = rows[i][9]+1
+                rows[i][9] = str(int(rows[i][9])+1)
                 #writing the winrate up to two decimal places
                 rows[i][7] = float("{0:.2f}".format(float(rows[i][9] / rows[i][5])))
         for i in rows:
