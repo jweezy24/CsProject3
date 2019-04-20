@@ -7,3 +7,4 @@ install:
   - pip install -r requirements.txt
 script:
   - python3 ./tests/player_tests.py
+  - python3 ./tests/ball_tests.py
