@@ -13,7 +13,7 @@ import threading
 #init networking stuff
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock2.bind(("",0))
+sock2.bind(("0.0.0.0",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
