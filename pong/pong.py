@@ -145,8 +145,6 @@ def pong(player1_name, player2_name, message, game_server):
             victory_json = {"op":"game_over", "winner":'', "loser":''}
             print("in victory packet")
             done = True
-            ball.x = dict_message['ball_x']
-            ball.y = dict_message['ball_y']
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
                 victory_json.update({"winner":player1_name})
@@ -175,6 +173,8 @@ def pong(player1_name, player2_name, message, game_server):
             if 'update' in packet:
                 #print("here")
                 json_message = json.loads(packet.replace("b'", '').replace("'", ''))
+                ball.x = dict_message['ball_x']
+                ball.y = dict_message['ball_y']
                 if json_message['op'] == 'update':
                     #print("here")
                     json_message = json.loads(packet.replace("b'", '').replace("'", ''))
