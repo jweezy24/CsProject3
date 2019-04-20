@@ -26,6 +26,8 @@ condition = threading.Condition()
 def send_info(json_message,game_server):
     #print(game_server)
     sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
+    sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
+    sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
 
 def create_listen_thread():
     t= threading.Thread(target=listen)
