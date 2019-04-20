@@ -36,7 +36,7 @@ def listen():
     global packet
     while True:
         message, address = sock2.recvfrom(1024)
-        print(sock2.getsockname())
+        #print(sock2.getsockname())
         packet = str(message)
 
 def pong(player1_name, player2_name, message, game_server):
@@ -111,7 +111,7 @@ def pong(player1_name, player2_name, message, game_server):
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
-            print(packet + " packet")
+            #print(packet + " packet")
             if 'update' in packet:
                 #print("here")
                 json_message = json.loads(packet.replace("b'", '').replace("'", ''))
