@@ -45,6 +45,8 @@ class match_maker:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
+            if json_message["op"] == "game_over":
+                self.update_winrate(json_message["winner"], json_message["loser"])
 
 
         except NameError:
@@ -73,7 +75,7 @@ class match_maker:
         writer = csv.writer(csv_file)
         for i in rows:
             writer.writerow(i)
-        writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0])
+        writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0,"wins",0])
         csv_file.close()
 
     def player_in_queue(self, name):
@@ -104,15 +106,17 @@ class match_maker:
         csv_file = open('./allPlayers.csv', 'w', newline='')
         writer = csv.writer(csv_file)
         for i in range(0,len(rows)):
-            for j in range(0,len(rows)):
-                if rows[i][j] == winner:
-                    rows[i][j+4] = rows[i][j+4]+1
-                    rows[i][j+8] = rows[i][j+8]+1
-                    rows[i][j+6] = rows[i][j+8]/rows[i][j+4]
+            if rows[i][1] == winner:
+                #adding the game to the user
+                rows[i][5] = rows[i][5]+1
+                #adding a win for the user
+                rows[i][9] = rows[i][9]+1
+                #writing the winrate up to two decimal places
+                rows[i][7] = float("{0:.2f}".format(float(rows[i][9] / rows[i][5])))
         for i in rows:
             writer.writerow(i)
         csv_file.close()
-                        
+
 
 
     def play_game(self,player1, player2):
@@ -124,4 +128,3 @@ server = match_maker()
 
 while True:
     server.listen()
-

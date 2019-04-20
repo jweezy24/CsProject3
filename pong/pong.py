@@ -43,6 +43,11 @@ def send_info(json_message,game_server):
     #print(game_server)
     sock.sendto(str(json_message).encode(), game_server)
 
+def send_victory(json_message):
+    #print(game_server)
+    game_server = ("<broadcast>", 7999)
+    sock.sendto(str(json_message).encode(), game_server)
+
 def create_listen_thread():
     t= threading.Thread(target=listen)
     threads.append(t)
@@ -122,8 +127,23 @@ def pong(player1_name, player2_name, message, game_server):
 
         # Stop the game if there is an imbalance of 3 points
         if abs(score1 - score2) > 3:
+            victory_json = {"op":"game_over", "winner":'', "loser":''}
             done = True
-
+            #if the difference is positive then score1 won => player 1 victory
+            if score1 - score2 > 0:
+                victory_json.update({"winner":player1})
+                victory_json.update({"loser":player2})
+                #we also only want to send the victory message once
+                #to do this we make sure that the username local to the player is player1
+                if username == player1:
+                    send_victory(json.dumps(victory_json))
+            else:
+                victory_json.update({"winner":player2})
+                victory_json.update({"loser":player1})
+                #we also only want to send the victory message once
+                #to do this we make sure that the username local to the player is player1
+                if username == player1:
+                    send_victory(json.dumps(victory_json))
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
