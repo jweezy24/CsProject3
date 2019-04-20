@@ -213,10 +213,10 @@ def first_phase():
         print(username + "username")
         if username == json_message["username1"]:
             game_server = json_message["username2"][1]
-            print(json_message["username2"][1]+ " game server")
+            print(str(json_message["username2"][1])+ " game server")
         else:
             game_server = json_message["username1"][1]
-            print(json_message["username2"][1]+ " game server")
+            print(str(json_message["username1"][1])+ " game server")
         pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
