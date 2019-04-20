@@ -18,7 +18,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
-MCAST_GRP = '224.1.1.1'
+MCAST_GRP = '224.0.0.251'
 MCAST_PORT = 5007
 sock3 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 try:

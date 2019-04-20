@@ -20,7 +20,7 @@ class match_maker:
         self.server_socket.bind(('0.0.0.0',7999))
         self.lobby_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.lobby_socket.bind(('0.0.0.0',8001))
-        self.MCAST_GRP = '224.1.1.1'
+        self.MCAST_GRP = '224.0.0.251'
         self.MCAST_PORT = 5007
         self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
