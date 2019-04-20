@@ -41,6 +41,21 @@ sock3.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
 local_username = ''
 packet = ''
 
+def send_start(game_server):
+    global start
+    sock2.settimeout(1)
+    try:
+        sock.sendto("start".encode(), game_server)
+        message,address = sock2.recvfrom(1024)
+        if b"start" in message:
+            start = True
+        sock.sendto("start".encode(), game_server)
+        message,address = sock2.recvfrom(1024)
+        if b'start' in message:
+            start = True
+    except Error as e:
+        print(e)
+
 def send_info(json_message,game_server):
     #print(game_server)
     sock.sendto(str(json_message).encode(), game_server)
@@ -64,6 +79,7 @@ def listen():
         if b'start' in message:
             start = True
         packet = str(message)
+
 
 def pong(player1_name, player2_name, message, game_server):
     global packet
@@ -257,6 +273,7 @@ def first_phase():
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
+        send_start(game_server)
         pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
