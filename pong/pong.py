@@ -149,6 +149,8 @@ def pong(player1_name, player2_name, message, game_server):
                     send_victory(json.dumps(victory_json))
                     pygame.quit()
                     main_menu.quit()
+            pygame.quit()
+            main_menu.quit()
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
