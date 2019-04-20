@@ -19,6 +19,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+local_username = ''
+
 def send_info(json_message,game_server):
     print(game_server)
     sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
@@ -113,8 +115,12 @@ def pong(player1_name, player2_name, message, game_server):
                     print("here")
                     json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
                     print(json_message)
-                    player1.move(dict_message['move'])
-                    player2.move(json_message["move"])
+                    if player1_name == local_username:
+                        player1.move(dict_message['move'])
+                        player2.move(json_message["move"])
+                    else:
+                        player2.move(dict_message['move'])
+                        player1.move(json_message["move"])
             dict_message['move'] = 0
             player1.update()
             player2.update()
@@ -172,7 +178,7 @@ def first_phase():
         print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        print(json_message['player'])
+        local_username = json_message['local_username']
         game_server = (json_message['player'][0], json_message['player'][1])
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
 
