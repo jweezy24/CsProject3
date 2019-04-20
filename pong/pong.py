@@ -9,7 +9,7 @@ import socket
 import main_menu
 import json
 import threading
-
+import time
 #init networking stuff
 sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
