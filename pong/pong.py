@@ -15,13 +15,29 @@ sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock2.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock2.bind(("0.0.0.0",0))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+MCAST_GRP = '224.1.1.1'
+MCAST_PORT = 5007
+sock3 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+try:
+    sock3.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+except AttributeError:
+    pass
+sock3.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+sock3.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+
+sock3.bind((MCAST_GRP, MCAST_PORT))
+host = socket.gethostbyname(socket.gethostname())
+sock3.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+sock3.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP,
+               socket.inet_aton(MCAST_GRP) + socket.inet_aton(host))
+
+
+
 local_username = ''
 packet = ''
-condition = threading.Condition()
 
 def send_info(json_message,game_server):
     #print(game_server)
@@ -188,7 +204,7 @@ def first_phase():
     message = "none"
     global local_username
     while not game_found:
-        game_found, message = main_menu.game_intro(sock,sock2)
+        game_found, message = main_menu.game_intro(sock,sock3)
         #print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))

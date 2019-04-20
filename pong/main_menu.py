@@ -44,10 +44,10 @@ def read_csv():
     return username
 
 
-def send_info(sock, sock2):
+def send_info(sock):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username, 'port':sock2.getsockname()[1]}
+    dict = {'op': 'searching', 'username': username}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
@@ -112,7 +112,7 @@ def game_intro(sock,sock2):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock,sock2)
+        send_info(sock)
         message = threads[0].name
         if "match made" in message:
             return(True, message)

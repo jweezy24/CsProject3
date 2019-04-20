@@ -19,6 +19,10 @@ class match_maker:
         self.server_socket.bind(('0.0.0.0',7999))
         self.lobby_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.lobby_socket.bind(('0.0.0.0',8001))
+        self.MCAST_GRP = '224.1.1.1'
+        self.MCAST_PORT = 5007
+        self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
     def listen(self):
         message = ''
@@ -122,9 +126,7 @@ class match_maker:
         send_out_2 = json.dumps(dict2)
         print(str(player1[2]) + "HERE")
         print(str(player2[2]) + "HERE")
-        self.lobby_socket.sendto(send_out_1.encode(), player1[2])
-        time.sleep(.1)
-        self.lobby_socket.sendto(send_out_2.encode(), player2[2])
+        self.cast_sock(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
 server = match_maker()
 
