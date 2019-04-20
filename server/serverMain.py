@@ -73,7 +73,7 @@ class match_maker:
         writer = csv.writer(csv_file)
         for i in rows:
             writer.writerow(i)
-        writer.writerow(["username", name, "rank", 0])
+        writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0])
         csv_file.close()
 
     def player_in_queue(self, name):
@@ -94,39 +94,34 @@ class match_maker:
         self.lobbies.append(("playing", player1, player2))
         t.start()
 
+    def update_winrate(self, winner, loser):
+        rows = []
+        old_csv = open('./allPlayers.csv', newline='')
+        reader = csv.reader(old_csv)
+        for row in reader:
+            rows.append(row)
+        old_csv.close()
+        csv_file = open('./allPlayers.csv', 'w', newline='')
+        writer = csv.writer(csv_file)
+        for i in range(0,len(rows)):
+            for j in range(0,len(rows)):
+                if rows[i][j] == winner:
+                    rows[i][j+4] = rows[i][j+4]+1
+                    rows[i][j+8] = rows[i][j+8]+1
+                    rows[i][j+6] = rows[i][j+8]/rows[i][j+4]
+        for i in rows:
+            writer.writerow(i)
+        csv_file.close()
+                        
 
-    #commented out central server model
-    # def play_game(self, player1, player2):
-    #     dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0] }
-    #     dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
-    #     json_message = json.dumps(dict)
-    #     json_message2 = json.dumps(dict2)
-    #     print(player1)
-    #     print(player2)
-    #     self.server_socket.sendto(json_message2.encode(), player1[2])
-    #     print("one mesage sent")
-    #     self.server_socket.sendto(json_message.encode(), player2[2])
-    #     print("second message sent")
-    #     while True:
-    #         send_out = {'local_movement': 0, 'away_movement': 0}
-    #         message, address = self.lobby_socket.recvfrom(1024)
-    #         json_message = json.loads(message)
-    #         if address == player1[2]:
-    #             send_out["away_movement"] = int(json_message["move"])
-    #             json_message_temp = json.dumps(send_out)
-    #             self.lobby_socket.sendto(json_message_temp.encode(), player2[2])
-    #             send_out["away_movement"] = 0
-    #             send_out["local_movement"] = int(json_message["move"])
-    #             json_message_temp = json.dumps(send_out)
-    #             self.lobby_socket.sendto(json_message_temp.encode(), player1[2])
 
     def play_game(self,player1, player2):
-        dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0],}
+        dict = {"op":" match made ", "username1": (player1[0], player1[2]), "username2": (player2[0], player2[2])}
         send_out_1 = json.dumps(dict)
-        send_out_2 = json.dumps(dict2)
         self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
 server = match_maker()
 
 while True:
     server.listen()
+
