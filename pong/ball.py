@@ -50,7 +50,7 @@ class Ball(pygame.sprite.Sprite):
     def reset(self, winner):
         self.x = 400
         self.y = 350.0
-        self.speed=8.0
+        self.speed=16.0
 
         # Direction of ball (in degrees)
         if winner == "R":
