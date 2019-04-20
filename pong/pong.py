@@ -26,7 +26,7 @@ condition = threading.Condition()
 def send_info(json_message,game_server):
     #print(game_server)
     sock.sendto(str(json_message).encode(), ('<broadcast>', game_server[1]))
-    
+
 def create_listen_thread():
     t= threading.Thread(target=listen)
     threads.append(t)
@@ -122,9 +122,15 @@ def pong(player1_name, player2_name, message, game_server):
                     if player1_name == local_username:
                         player1.move(dict_message['move'])
                         player2.move(json_message["move"])
+                        player1.update()
+                        player2.update()
+                        ball.update()
                     else:
                         player2.move(dict_message['move'])
                         player1.move(json_message["move"])
+                        player1.update()
+                        player2.update()
+                        ball.update()
             else:
                 print("packet not recieved")
                 if player1_name == local_username:
@@ -132,9 +138,6 @@ def pong(player1_name, player2_name, message, game_server):
                 else:
                     player2.move(dict_message['move'])
             dict_message['move'] = 0
-            player1.update()
-            player2.update()
-            ball.update()
 
         # If we are done, print game over
         if done:
