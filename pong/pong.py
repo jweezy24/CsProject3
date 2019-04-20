@@ -43,7 +43,7 @@ packet = ''
 
 def send_start(game_server):
     global start
-    sock2.settimeout(1)
+    sock2.settimeout(3)
     try:
         sock.sendto("start".encode(), game_server)
         message,address = sock2.recvfrom(1024)
