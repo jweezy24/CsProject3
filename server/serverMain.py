@@ -114,7 +114,7 @@ class match_maker:
                 #adding a win for the user
                 rows[i][9] = str(int(rows[i][9])+1)
                 #writing the winrate up to two decimal places
-                rows[i][7] = float("{0:.2f}".format(float(rows[i][9] / rows[i][5])))
+                rows[i][7] = float("{0:.2f}".format(float(int(rows[i][9]) / int(rows[i][5]))))
         for i in rows:
             writer.writerow(i)
         csv_file.close()
