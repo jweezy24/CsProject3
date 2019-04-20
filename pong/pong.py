@@ -224,7 +224,7 @@ def pong(player1_name, player2_name, message, game_server):
         score1 = ball.p1_score
         score2 = ball.p2_score
 
-        clock.tick(30)
+        clock.tick(60)
 
 def first_phase():
     game_found = False
