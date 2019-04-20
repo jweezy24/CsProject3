@@ -5,6 +5,7 @@ import sys
 import json
 import csv
 import threading
+import struct
 
 class match_maker:
     def __init__(self):
