@@ -18,6 +18,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+start = False
+
 MCAST_GRP = '224.0.0.251'
 MCAST_PORT = 5007
 sock3 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
@@ -55,15 +57,19 @@ def create_listen_thread():
 
 def listen():
     global packet
+    global start
     while True:
         message, address = sock2.recvfrom(1024)
         #print(sock2.getsockname())
+        if b'start' in message:
+            start = True
         packet = str(message)
 
 def pong(player1_name, player2_name, message, game_server):
     global packet
+    global start
     create_listen_thread()
-    dict_message = {"op" :"update", "move": 0}
+    dict_message = {"op" :"update", "move": 0, "ball_x": 400, "ball_y": 350.0}
     BLACK = (0 ,0, 0)
     WHITE = (255, 255, 255)
 
@@ -108,7 +114,7 @@ def pong(player1_name, player2_name, message, game_server):
     done = False
     exit_program = False
 
-    while not exit_program:
+    while not exit_program and start:
 
         # Clear the screen
         screen.fill(BLACK)
@@ -121,15 +127,26 @@ def pong(player1_name, player2_name, message, game_server):
         keys = pygame.key.get_pressed()  #checking pressed keys
         if keys[pygame.K_w]:
             dict_message["move"] = -10
+
         if keys[pygame.K_s]:
             dict_message["move"] = 10
 
+
+        if 'update' in packet:
+            ball_update = json.loads(packet.replace("b'", '').replace("'", ''))
+            dict_message["ball_x"] = (ball.x + ball_update["ball_x"])/2
+            dict_message["ball_y"] = (ball.y + ball_update["ball_y"])/2
+        else:
+            dict_message["ball_x"] = ball.x
+            dict_message["ball_y"] = ball.y
 
         # Stop the game if there is an imbalance of 3 points
         if abs(score1 - score2) > 2:
             victory_json = {"op":"game_over", "winner":'', "loser":''}
             print("in victory packet")
             done = True
+            ball.x = dict_message['ball_x']
+            ball.y = dict_message['ball_y']
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
                 victory_json.update({"winner":player1_name})
@@ -224,7 +241,7 @@ def pong(player1_name, player2_name, message, game_server):
         score1 = ball.p1_score
         score2 = ball.p2_score
 
-        clock.tick(60)
+        clock.tick(30)
 
 def first_phase():
     game_found = False
