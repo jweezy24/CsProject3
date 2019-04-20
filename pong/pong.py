@@ -204,14 +204,12 @@ def first_phase():
     message = "none"
     global local_username
     while not game_found:
-        game_found, message = main_menu.game_intro(sock,sock2,sock3)
+        game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         #print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        if json_message['sleep'] == 1:
-            time.sleep(.01)
-        local_username = json_message['local_name']
         game_server = (json_message['player'][0], json_message['player'][1])
+        local_username = username
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
 
 if __name__ == '__main__':

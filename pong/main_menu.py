@@ -24,7 +24,7 @@ pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
 threads = []
 local_server = ("<broadcast>", 7999)
-packet = ''
+packet = b''
 
 
 
@@ -72,6 +72,7 @@ def text_objects(text, font):
 def game_intro(sock,sock2,sock3):
     global packet
     create_listen_thread(sock3)
+    username = read_csv()
     count = 0
     intro = True
     display_searchRect = None
@@ -119,7 +120,7 @@ def game_intro(sock,sock2,sock3):
         send_info(sock,sock2)
         message = packet
         if "match made" in message:
-            return(True, message)
+            return(True, message, username)
 
         pygame.display.update()
         clock.tick(15)
