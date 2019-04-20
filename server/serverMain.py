@@ -41,7 +41,7 @@ class match_maker:
             print(address)
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
-                self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
+                self.player_queue.append((json_message["username"], json_message))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
 
@@ -124,8 +124,6 @@ class match_maker:
         dict2 = {"op":" match made ", "player": player1[2], "local_name": player2[0], "username_local": player1[0], "username_away": player2[0], "sleep":0}
         send_out_1 = json.dumps(dict)
         send_out_2 = json.dumps(dict2)
-        print(str(player1[2]) + "HERE")
-        print(str(player2[2]) + "HERE")
         self.cast_sock(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
 server = match_maker()
