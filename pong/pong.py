@@ -178,7 +178,7 @@ def first_phase():
         print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-        local_username = json_message['local_username']
+        local_username = json_message['local_name']
         game_server = (json_message['player'][0], json_message['player'][1])
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
 
