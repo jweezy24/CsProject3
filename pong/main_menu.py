@@ -59,6 +59,7 @@ def create_listen_thread(sock):
 def listen(sock):
     while True:
         message, address = sock.recvfrom(1024)
+        print(str(message) + "HERE")
         threads[0].name = message
 
 def text_objects(text, font):
