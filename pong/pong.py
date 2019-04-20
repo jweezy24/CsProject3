@@ -107,14 +107,14 @@ def pong(player1_name, player2_name, message, game_server):
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
-            print(threads[0].name)
+            #print(threads[0].name)
             if 'update' in threads[0].name:
-                print("here")
+                #print("here")
                 json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
                 if json_message['op'] == 'update':
-                    print("here")
+                    #print("here")
                     json_message = json.loads(threads[0].name.replace("b'", '').replace("'", ''))
-                    print(json_message)
+                    print(local_username + "here")
                     if player1_name == local_username:
                         player1.move(dict_message['move'])
                         player2.move(json_message["move"])
@@ -173,11 +173,13 @@ def pong(player1_name, player2_name, message, game_server):
 def first_phase():
     game_found = False
     message = "none"
+    global local_username
     while not game_found:
         game_found, message = main_menu.game_intro(sock,sock2)
         print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
+
         local_username = json_message['local_name']
         game_server = (json_message['player'][0], json_message['player'][1])
         pong(json_message["username_local"], json_message["username_away"], message, game_server)
