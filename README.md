@@ -6,9 +6,9 @@ Online Pong. Users can play matches of pong on a local network.
 
 ## Getting Started
 
-Make sure to look at installing before starting the program. 
+Make sure to look at installing before starting the program.
 
-To run the local client, run the command `python3 ./pong/pong.py`. This will run the game. The game will load into a searching screen. In this screen UDP packets are broadcasted over the user's local internet looking for the match making server. To launch the server, run from the parent directory, `python3 ./server/serverMain.py`. You will need another player on that network to play with you.  
+To run the local client, run the command `python3 /pong.py` in the ./pong directory. This will run the game. The game will load into a searching screen. In this screen UDP packets are broadcasted over the user's local internet looking for the match making server. To launch the server, run from the parent directory, `python3 ./server/serverMain.py`. You will need another player on that network to play with you.  
 
 
 ## Functionality
