@@ -12,4 +12,4 @@ def generate_tree(size):
 
 if __name__ == "__main__":
     tree = generate_tree(16)
-    print(tree.root.right)
+    print(tree.root)

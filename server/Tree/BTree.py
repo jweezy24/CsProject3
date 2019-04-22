@@ -41,12 +41,6 @@ class BTree(object):
 
     def get_next_open_node(self, node):
         if node.left and node.right:
-            if not self.get_next_open_node(node.left).left or not self.get_next_open_node(node.left).right:
-                return self.get_next_open_node(node.left)
-            elif not self.get_next_open_node(node.right).left or not self.get_next_open_node(node.right).right:
-                return self.get_next_open_node(node.right)
-        elif not node.left or not node.right:
+            return get_next_open_node(node)
+        if not node.left or not node.right:
             return node
-
-
-    
