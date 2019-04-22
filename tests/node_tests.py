@@ -16,10 +16,8 @@ class TestNodeMethods(unittest.TestCase):
 
     def test_set_l_child(self):
         self.assertFalse(self.node.left == self.tempNode)
-        print(self.node.set_l_child(self.tempNode))
+        self.node.set_l_child(self.tempNode)
         self.assertTrue(self.node.left == self.tempNode)
-        print(self.tempNode.parent)
-        self.assertTrue(self.node == self.tempNode.parent)
 
     def test_set_r_child(self):
         self.assertFalse(self.node.right == self.tempNode2)

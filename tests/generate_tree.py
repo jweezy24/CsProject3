@@ -11,5 +11,5 @@ def generate_tree(size):
     return tree
 
 if __name__ == "__main__":
-    tree = generate_tree(5)
-    print(tree.root)
+    tree = generate_tree(16)
+    print(tree.root.right)
