@@ -8,3 +8,4 @@ install:
 script:
   - python3 ./tests/player_tests.py
   - python3 ./tests/ball_tests.py
+  - python3 ./tests/node_tests.py

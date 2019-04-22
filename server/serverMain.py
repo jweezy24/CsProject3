@@ -128,6 +128,6 @@ class match_maker:
         self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
 server = match_maker()
-
-while True:
-    server.listen()
+if __name__ == '__main__':
+    while True:
+        server.listen()
