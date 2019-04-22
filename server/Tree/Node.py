@@ -2,6 +2,7 @@
 class Node(object):
     def __init__(self, data):
         self.data = data
+        self.parent = None
         self.right = None
         self.left = None
 
@@ -37,16 +38,21 @@ class Node(object):
         self.right = None
         self.left = None
 
-    def __str__(self):
+    def __str__(self,level=1):
         if isinstance(self.left, Node):
-            left = self.left.data
+            tempLevel = level
+            tempLevel +=1
+            left = str("\n")+ str("\t"*level) + self.left.__str__(tempLevel) + ""
         else:
-            left = "none"
+            left = ""
         if isinstance(self.right, Node):
-            right = self.right.data
+            tempLevel = level
+            tempLevel +=1
+            right = str("\n")+ str("\t"*level) + self.right.__str__(tempLevel)
         else:
-            right = "none"
-        return "Self: " + str(self.data) + "\tLeft " + str(left) + "\tRight: " + str(right)
+            right = ""
+        return "Node: " + str(self.data) + str(left)  + str(right)
+
 
     #rewritting how the objects will compare
     def __eq__(self, other):
