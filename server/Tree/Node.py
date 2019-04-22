@@ -37,6 +37,17 @@ class Node(object):
         self.right = None
         self.left = None
 
+    def __str__(self):
+        if isinstance(self.left, Node):
+            left = self.left.data
+        else:
+            left = "none"
+        if isinstance(self.right, Node):
+            right = self.right.data
+        else:
+            right = "none"
+        return "Self: " + str(self.data) + "\tLeft " + str(left) + "\tRight: " + str(right)
+
     #rewritting how the objects will compare
     def __eq__(self, other):
         if not other:
