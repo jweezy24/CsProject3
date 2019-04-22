@@ -16,6 +16,7 @@ class match_maker:
         self.threads = []
         self.init_network()
     def init_network(self):
+        #get multicast address linux netstat -anu|sort -nk4
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind(('0.0.0.0',7999))
         self.lobby_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

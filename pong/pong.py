@@ -1,4 +1,5 @@
 # --- Import libraries used for this program
+# get multicast addresses netstat -anu|sort -nk4
 import sys
 import math
 import pygame
