@@ -308,7 +308,7 @@ def first_phase():
             print(game_server)
 
         send_start(game_server)
-        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+        pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
 if __name__ == '__main__':
