@@ -190,7 +190,7 @@ def pong(player1_name, player2_name, message, game_server):
                     victory_json.update({"loser":player1_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
-                if local_username == player1_name:
+                if local_username == player2_name:
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
                     first_phase()
