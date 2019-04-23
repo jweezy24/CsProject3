@@ -46,7 +46,6 @@ packet = ''
 def send_start(game_server):
     global start
     sock2.settimeout(10)
-    print(game_server)
     try:
         sock.sendto("start".encode(), game_server)
         message,address = sock2.recvfrom(1024)
@@ -70,6 +69,7 @@ def send_victory(json_message):
     sock.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
+    print(game_server)
     t= threading.Thread(target=listen)
     threads.append(t)
     t.start()
@@ -296,9 +296,11 @@ def first_phase():
         if next_round:
             send_start(game_server)
             pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+            break
         else:
             send_start(game_server)
             pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+            break
 
 if __name__ == '__main__':
     while True:
