@@ -276,7 +276,6 @@ def pong(player1_name, player2_name, message, game_server):
 
         clock.tick(30)
 
-    pygame.quit()
     reset()
 
 def reset():
