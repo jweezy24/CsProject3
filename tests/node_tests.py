@@ -33,4 +33,12 @@ class TestNodeMethods(unittest.TestCase):
         self.assertFalse(self.node.right)
         self.assertFalse(self.node.left)
 
+    def test_str(self):
+        self.assertEqual(str(self.node), 'Node: jweezy') # wanna change this, omw over rn
+
+    def test_eq(self):
+        eq_node = Node.Node('test')
+        self.assertNotEqual(self.tempNode, self.tempNode2)
+        self.assertEqual(self.tempNode, eq_node)
+
 unittest.main()
