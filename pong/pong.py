@@ -45,6 +45,7 @@ packet = ''
 def send_start(game_server):
     global start
     sock2.settimeout(10)
+    print(game_server)
     try:
         sock.sendto("start".encode(), game_server)
         message,address = sock2.recvfrom(1024)
@@ -290,6 +291,7 @@ def first_phase():
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
+
         send_start(game_server)
         pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
