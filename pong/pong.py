@@ -182,9 +182,7 @@ def pong(player1_name, player2_name, message, game_server):
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
-                    score1 = 0
-                    score2 = 0
-                    first_phase()
+                    break
             else:
                 if "tm" in message:
                     victory_json.update({"winner":(player2_name, game_server)})
@@ -197,7 +195,7 @@ def pong(player1_name, player2_name, message, game_server):
                 if local_username == player2_name:
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
-                    first_phase()
+                    break
             pygame.quit()
             sys.exit()
         if not done:
@@ -277,6 +275,11 @@ def pong(player1_name, player2_name, message, game_server):
 
         clock.tick(30)
 
+    reset()
+
+def reset():
+    first_phase()
+    
 def first_phase():
     game_found = False
     message = "none"
