@@ -1,5 +1,5 @@
-import server.Tree.BTree as BTree
-import server.Tree.Node as Node
+import Tree.BTree as BTree
+import Tree.Node as Node
 
 class Tournament:
 
