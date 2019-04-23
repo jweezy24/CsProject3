@@ -80,7 +80,7 @@ def listen():
     print("created thread")
     while True:
         message, address = sock2.recvfrom(1024)
-        #print(sock2.getsockname())
+        print(message)
         if b'start' in message:
             start = True
         packet = str(message)
@@ -182,6 +182,13 @@ def pong(player1_name, player2_name, message, game_server):
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
+                    movingsprites.remove(player1)
+                    movingsprites.remove(player2)
+                    movingsprites.remove(ball)
+                    balls.remove(ball)
+                    del player1
+                    del player2
+                    del ball
                     time.sleep(2)
                     packet = ''
                     return
@@ -196,6 +203,13 @@ def pong(player1_name, player2_name, message, game_server):
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player2_name:
                     send_victory(json.dumps(victory_json))
+                    movingsprites.remove(player1)
+                    movingsprites.remove(player2)
+                    movingsprites.remove(ball)
+                    balls.remove(ball)
+                    del player1
+                    del player2
+                    del ball
                     time.sleep(2)
                     packet = ''
                     return
@@ -303,9 +317,13 @@ def first_phase():
             break
 
 if __name__ == '__main__':
+    global packet
+    global start
+    global next_round
     while True:
         first_phase()
         #reseting globals
         next_round = False
         start = False
+        packet = ''
     pygame.quit()
