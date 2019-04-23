@@ -70,6 +70,7 @@ def text_objects(text, font):
 
 def game_intro(sock,sock2,sock3):
     global packet
+    pygame.init()
     create_listen_thread(sock3)
     username = read_csv()
     count = 0
