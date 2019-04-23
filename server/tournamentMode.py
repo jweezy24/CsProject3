@@ -45,7 +45,7 @@ class Tournament:
                 tempNode.right = tempP2
                 self.matches.append(tempNode)
             if len(self.players)%2 == 1:
-                if i+1 == len(self.players):
+                if i+1 >= len(self.players):
                     tempP1 = self.players.pop()
                     tempNode = Node.Node(tempP1.data[0] + " vs. waiting" )
                     self.matches.append(tempNode)
