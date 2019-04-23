@@ -316,7 +316,7 @@ def first_phase():
             previous_player = json_message["username1"][0]
             player_found = True
             print(previous_player + " is the previous_player")
-            
+
         elif previous_player != json_message["username2"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username2"][0]
             print(previous_player + " is the previous_player")
@@ -339,8 +339,4 @@ def first_phase():
 if __name__ == '__main__':
     while True:
         first_phase()
-        #reseting globals
-        next_round = False
-        start = False
-        packet = ''
     pygame.quit()
