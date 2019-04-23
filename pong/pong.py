@@ -301,6 +301,7 @@ def first_phase():
     global previous_player
     start = False
     player_found = False
+    game_server = ''
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
