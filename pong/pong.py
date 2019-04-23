@@ -160,7 +160,6 @@ def pong(player1_name, player2_name, message, game_server):
         # Stop the game if there is an imbalance of 3 points
         if abs(score1 - score2) > 2:
             if "tm" in message:
-                print("HERE")
                 victory_json = {"op":"tm_result", "winner":'', "loser":''}
             else:
                 victory_json = {"op":"game_over", "winner":'', "loser":''}
@@ -199,6 +198,15 @@ def pong(player1_name, player2_name, message, game_server):
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
             #print(packet + " packet")
+            if "tm match" in packet:
+                json_message = json.loads(packet.replace("b'", '').replace("'", ''))
+                pygame.exit()
+                if json_message["username1"][0] == local_username:
+                    game_server = json_message["username2"][1]
+                else:
+                    game_server = json_message["username1"][1]
+                pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
+                threads[0].exit()
             if 'update' in packet:
                 #print("here")
                 json_message = json.loads(packet.replace("b'", '').replace("'", ''))
