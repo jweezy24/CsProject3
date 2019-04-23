@@ -46,6 +46,7 @@ packet = ''
 def send_start(game_server):
     global start
     sock2.settimeout(10)
+    print(game_server)
     while not start:
         try:
             sock.sendto("start".encode(), game_server)
