@@ -184,7 +184,7 @@ def pong(player1_name, player2_name, message, game_server):
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
                     packet = ''
-                    break
+                    return
             else:
                 if "tm" in message:
                     victory_json.update({"winner":(player2_name, game_server)})
@@ -198,7 +198,7 @@ def pong(player1_name, player2_name, message, game_server):
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
                     packet = ''
-                    break
+                    return
             pygame.quit()
             sys.exit()
         if not done:
@@ -278,11 +278,6 @@ def pong(player1_name, player2_name, message, game_server):
 
         clock.tick(30)
 
-    reset()
-
-def reset():
-    next_round = True
-    first_phase()
 
 def first_phase():
     game_found = False
@@ -299,7 +294,6 @@ def first_phase():
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
         if next_round:
-            time.sleep(3)
             send_start(game_server)
             pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
         else:
@@ -307,5 +301,9 @@ def first_phase():
             pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
-    first_phase()
+    while True:
+        first_phase()
+        #reseting globals
+        next_round = False
+        start = False
     pygame.quit()
