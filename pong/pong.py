@@ -330,7 +330,8 @@ def first_phase():
             send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
             game_found = True
 
-        pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
+        if game_found:
+            pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
 if __name__ == '__main__':
