@@ -48,6 +48,7 @@ def send_start(game_server):
     try:
         sock.sendto("start".encode(), game_server)
         message,address = sock2.recvfrom(1024)
+        time.sleep(5)
         if b"start" in message:
             start = True
         sock.sendto("start".encode(), game_server)
