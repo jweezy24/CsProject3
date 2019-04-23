@@ -302,11 +302,9 @@ def first_phase():
     start = False
     player_found = False
     game_server = ''
-    while not game_found:
-        game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
+    game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
+    if game_found:
         message = str(message)
-        #print(str(message) + " message recieved in first phase")
-        #print(username + " username in first phase")
 
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
@@ -318,6 +316,7 @@ def first_phase():
             previous_player = json_message["username1"][0]
             player_found = True
             print(previous_player + " is the previous_player")
+            
         elif previous_player != json_message["username2"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username2"][0]
             print(previous_player + " is the previous_player")
