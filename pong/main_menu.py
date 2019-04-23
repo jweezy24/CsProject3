@@ -52,17 +52,17 @@ def send_info(sock, sock2):
     sock.sendto(str(json_message).encode(), local_server)
 
 def create_listen_thread(sock,username):
-    t= threading.Thread(target=listen, args=(sock, username,  ))
+    t= threading.Thread(target=listen, args=(sock, ))
     threads.append(t)
     t.start()
 
-def listen(sock, username):
+def listen(sock):
     global packet
     while True:
         message, address = sock.recvfrom(1024)
         print(str(message) + " HERE")
         print(str(username) + " HERE")
-        if b"tm match" in message and username in str(message):
+        if b"tm match" in message:
             packet = message
             break
         elif b"match made" in message:
@@ -138,7 +138,7 @@ def game_intro(sock,sock2,sock3):
             #print(str(message) + " message before reassignment in main menu")
             holder = message
             #print(str(message) + " message after reassignment in main menu")
-            #print(str(holder) + " holder after reassignment in main menu")
+            print(str(holder) + " holder after reassignment in main menu")
             del message
             return(True, holder, username)
         pygame.display.update()
