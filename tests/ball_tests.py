@@ -1,6 +1,8 @@
 import unittest
 import sys
 import pong.ball as ball
+import pong.player as player
+
 class TestPlayerMethods(unittest.TestCase):
     def setUp(self):
         self.ball = ball.Ball()
@@ -34,6 +36,20 @@ class TestPlayerMethods(unittest.TestCase):
         self.ball.wall_bounce()
         self.assertTrue(self.ball.direction != temp_holder)
         self.assertTrue(self.ball.direction == (180-temp_holder)%360)
+
+    def test_player_bounce_L(self):
+        temp_player = player.Player(username='testler', side='L', pos=25)
+        temp_direction = self.ball.direction
+        self.ball.player_bounce(temp_player, 30)
+        self.assertTrue(self.ball.direction != temp_direction)
+        self.assertTrue(self.ball.direction == ((360-temp_direction)%360)-30)
+
+    def test_player_bounce_R(self):
+        temp_player = player.Player(username='testler', side='R', pos=775)
+        temp_direction = self.ball.direction
+        self.ball.player_bounce(temp_player, 30)
+        self.assertTrue(self.ball.direction != temp_direction)
+        self.assertTrue(self.ball.direction == ((360-temp_direction)%360)-30)
 
     # def test_update(self):
     #     holderRect = self.ball.rect.y
