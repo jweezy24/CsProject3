@@ -80,7 +80,7 @@ def game_intro(sock,sock2,sock3):
     global packet
     pygame.init()
     username = read_csv()
-    if len(threads <= 1):
+    if len(threads) <= 1:
         create_listen_thread(sock3, username)
     count = 0
     intro = True
