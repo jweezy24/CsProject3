@@ -69,7 +69,6 @@ def send_victory(json_message):
     sock.sendto(str(json_message).encode(), game_server)
 
 def create_listen_thread():
-    print(game_server)
     t= threading.Thread(target=listen)
     threads.append(t)
     t.start()
@@ -78,6 +77,7 @@ def listen():
     global packet
     global start
     sock2.settimeout(10)
+    print("created thread")
     while True:
         message, address = sock2.recvfrom(1024)
         #print(sock2.getsockname())
