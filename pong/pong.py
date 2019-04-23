@@ -183,6 +183,7 @@ def pong(player1_name, player2_name, message, game_server):
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
+                    packet = ''
                     break
             else:
                 if "tm" in message:
@@ -196,6 +197,7 @@ def pong(player1_name, player2_name, message, game_server):
                 if local_username == player2_name:
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
+                    packet = ''
                     break
             pygame.quit()
             sys.exit()
