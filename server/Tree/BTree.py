@@ -2,10 +2,10 @@ from .Node import Node
 
 class BTree(object):
 
-    def __init__(self, root, size):
+    def __init__(self, root):
         if isinstance(root, Node):
             self.root = root
-            self.size = size
+            self.size = 0
         else:
             raise ValueError('Cannot initalize tree without root node')
 
@@ -25,13 +25,7 @@ class BTree(object):
             else:
                 leafs.set_l_child(node)
                 self.set_parent(leafs, node)
-        else:
-            if not self.root.left:
-                self.root.set_l_child(node)
-                self.set_parent(self.root, node)
-            else:
-                self.root.set_r_child(node)
-                self.set_parent(self.root, node)
+        self.size += 1
 
     def set_parent(self, parent, child):
         if isinstance(parent, Node) and isinstance(child, Node):
@@ -40,7 +34,15 @@ class BTree(object):
             raise ValueError('Child and/or parent not of type "Node".')
 
     def get_next_open_node(self, node):
-        if node.left and node.right:
-            return get_next_open_node(node)
         if not node.left or not node.right:
-            return node
+            if not node.left:
+                return node
+            elif not node.right:
+                return node
+            else:
+                return node
+        elif node.left and node.right:
+            if self.size%2 == 0:
+                return self.get_next_open_node(node.right)
+            else:
+                return self.get_next_open_node(node.left)
