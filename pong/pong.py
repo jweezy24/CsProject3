@@ -170,7 +170,7 @@ def pong(player1_name, player2_name, message, game_server):
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
                 if "tm" in message:
-                    victory_json.update({"winner":(player1_name, (host, sock2.getnameinfo()[1]))})
+                    victory_json.update({"winner":(player1_name, (host, sock2.getsockname()[1]))})
                     victory_json.update({"loser":player2_name})
                 else:
                     victory_json.update({"winner":player1_name})
@@ -191,7 +191,7 @@ def pong(player1_name, player2_name, message, game_server):
                     return
             else:
                 if "tm" in message:
-                    victory_json.update({"winner":(player2_name, (host, sock2.getnameinfo()[1]))})
+                    victory_json.update({"winner":(player2_name, (host, sock2.getsockname()[1]))})
                     victory_json.update({"loser":player1_name})
                 else:
                     victory_json.update({"winner":player2_name})
