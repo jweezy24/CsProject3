@@ -17,7 +17,7 @@ class match_maker:
         self.player_queue = []
         self.threads = []
         self.tournament = None
-        self.tourny = False
+        self.isTourny = False
         self.tourny_size = 0
         self.init_network()
 
@@ -46,14 +46,14 @@ class match_maker:
         message = ''
         address = ''
         #creates a tournament object
-        if self.tourny:
+        if self.isTourny:
             self.create_tournament()
         try:
             message, address = self.server_socket.recvfrom(1024)
-            if len(self.player_queue) >= 2 and not self.tourny:
+            if len(self.player_queue) >= 2 and not self.isTourny:
                 self.match_players()
                 time.sleep(1)
-            elif len(self.player_queue) >= self.tourny_size and self.tourny:
+            elif len(self.player_queue) >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
 
         except socket.timeout:
