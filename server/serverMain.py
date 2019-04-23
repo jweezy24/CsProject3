@@ -61,7 +61,7 @@ class match_maker:
                 time.sleep(1)
             elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
-                self.play_tourny()
+                print(self.play_tourny())
 
         except socket.timeout:
             print("timeout")
