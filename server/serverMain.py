@@ -39,7 +39,7 @@ class match_maker:
         self.tournament.add_players(player, address)
 
     def generate_bracket(self):
-        self.tournament.generate_matches()
+        print(self.tournament.generate_matches())
 
     def play_tourny(self):
         for i in self.tournament.matches:
@@ -47,15 +47,17 @@ class match_maker:
             if i and "waiting" not in i.data:
                 player1 = (i.left.data[0], i.left.data[1])
                 player2 = (i.right.data[0], i.right.data[1])
+                self.tournament.matches.pop()
                 dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
                 send_out_1 = json.dumps(dict)
                 self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
     def play_next_rount(self, player):
         for i in self.tournament.matches:
-            if "waiting" in i.data[0]:
+            if "waiting" in i.data:
                 player1 = (i.left.data[0], i.left.data[1])
                 player2 = (player[0], player[1])
+                self.tournament.matches.pop()
                 dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
                 send_out_1 = json.dumps(dict)
                 self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
@@ -97,7 +99,7 @@ class match_maker:
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
             if json_message["op"] == "tm_result":
-                self.play_next_rount(json_message["winner"])
+                print(self.play_next_rount(json_message["winner"]))
 
 
         except NameError:

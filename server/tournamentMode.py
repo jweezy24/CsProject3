@@ -50,3 +50,6 @@ class Tournament:
                     tempNode = Node.Node(tempP1.data[0] + " vs. waiting" )
                     self.matches.append(tempNode)
             i+=1
+
+        print("game 1: " + self.matches[0].data)
+        print("game 2: " + self.matches[1].data)
