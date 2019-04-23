@@ -46,18 +46,14 @@ packet = ''
 def send_start(game_server):
     global start
     sock2.settimeout(10)
-    try:
-        sock.sendto("start".encode(), game_server)
-        message,address = sock2.recvfrom(1024)
-        time.sleep(5)
-        if b"start" in message:
-            start = True
-        sock.sendto("start".encode(), game_server)
-        message,address = sock2.recvfrom(1024)
-        if b'start' in message:
-            start = True
-    except Exception as e:
-        print(e)
+    while not start:
+        try:
+            sock.sendto("start".encode(), game_server)
+            message,address = sock2.recvfrom(1024)
+            if b"start" in message:
+                start = True
+        except Exception as e:
+            print(e)
 
 def send_info(json_message,game_server):
     #print(game_server)
