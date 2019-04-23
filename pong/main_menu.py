@@ -127,7 +127,7 @@ def game_intro(sock,sock2,sock3):
             holder = message
             del message
             return(True, holder, username)
-        elif b'tm match' in message:
+        elif 'tm match' in str(message):
             holder = message
             del message
             return(True, holder, username)

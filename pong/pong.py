@@ -304,12 +304,13 @@ def first_phase():
         local_username = username
         if username == json_message["username1"][0]:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
+            send_start((json_message["username2"][1][0], json_message["username2"][1][1]))
             game_found = True
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
+            send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
             game_found = True
-
-        send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
+            
         pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
