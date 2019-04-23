@@ -36,6 +36,11 @@ class Tournament:
 
     def generate_matches(self):
         i = 0
+        if len(self.players)%2 == 1:
+            oddNum = True
+        else:
+            oddNum = False
+
         while len(self.players) > 0:
             if i%2 == 0:
                 tempP1 = self.players.pop()
@@ -44,10 +49,11 @@ class Tournament:
                 tempNode.left = tempP1
                 tempNode.right = tempP2
                 self.matches.append(tempNode)
-            if len(self.players)%2 == 1:
+            if oddNum:
                 if i+1 >= len(self.players):
                     tempP1 = self.players.pop()
                     tempNode = Node.Node(tempP1.data[0] + " vs. waiting" )
+                    tempNode.left = tempP1
                     self.matches.append(tempNode)
             i+=1
 

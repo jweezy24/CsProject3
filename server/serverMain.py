@@ -18,6 +18,7 @@ class match_maker:
         self.threads = []
         self.tournament = None
         self.isTourny = False
+        self.tourny_in_progress = False
         self.tourny_size = 0
         self.init_network()
 
@@ -43,17 +44,19 @@ class match_maker:
 
     def play_tourny(self):
         for i in self.tournament.matches:
-            print(i.data[0])
+            print(i.data)
             if i and "waiting" not in i.data:
                 player1 = (i.left.data[0], i.left.data[1])
                 player2 = (i.right.data[0], i.right.data[1])
-                self.tournament.matches.pop()
+                self.tournament.matches.remove(i)
                 dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
                 send_out_1 = json.dumps(dict)
                 self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
     def play_next_rount(self, player):
+        print(player)
         for i in self.tournament.matches:
+            print(i.data)
             if "waiting" in i.data:
                 player1 = (i.left.data[0], i.left.data[1])
                 player2 = (player[0], player[1])
@@ -75,6 +78,8 @@ class match_maker:
                 time.sleep(1)
             elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
+                time.sleep(1)
+                self.tourny_in_progress = True
                 print(self.play_tourny())
 
         except socket.timeout:
@@ -90,7 +95,7 @@ class match_maker:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
-            if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny:
+            if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny and not self.tourny_in_progress:
                 self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
