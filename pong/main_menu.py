@@ -124,7 +124,9 @@ def game_intro(sock,sock2,sock3):
         send_info(sock,sock2)
         message = packet
         if b'match made' in message or b'tm match' in message and username in str(message):
-            return(True, message, username)
+            holder = message
+            del message
+            return(True, holder, username)
 
         pygame.display.update()
         clock.tick(15)
