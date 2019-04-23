@@ -61,7 +61,7 @@ def listen(sock, username):
     while True:
         message, address = sock.recvfrom(1024)
         print(str(message) + "HERE")
-        if b"tm match" in message and username in message:
+        if b"tm match" in message and username in str(message):
             packet = message
             return
         else:
