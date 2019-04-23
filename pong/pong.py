@@ -301,6 +301,8 @@ def first_phase():
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
+        print(message + " in first phase")
+        print(username + " in first phase")
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
         local_username = username
