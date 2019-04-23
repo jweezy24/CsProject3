@@ -19,6 +19,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+next_round = False
 start = False
 
 MCAST_GRP = '224.0.0.251'
@@ -279,6 +280,7 @@ def pong(player1_name, player2_name, message, game_server):
     reset()
 
 def reset():
+    next_round = True
     first_phase()
 
 def first_phase():
@@ -295,9 +297,13 @@ def first_phase():
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
-
-        send_start(game_server)
-        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+        if next_round:
+            time.sleep(3)
+            send_start(game_server)
+            pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+        else:
+            send_start(game_server)
+            pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
 
 if __name__ == '__main__':
     first_phase()
