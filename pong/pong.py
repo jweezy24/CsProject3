@@ -313,10 +313,10 @@ def first_phase():
 
         local_username = username
 
-        if previous_player != json_message["username1"][0] and json_message["username1"][0 != local_username]:
+        if previous_player != json_message["username1"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username1"][0]
             player_found = True
-        elif previous_player != json_message["username2"][0] and json_message["username1"][0 != local_username]:
+        elif previous_player != json_message["username2"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username2"][0]
             player_found = True
 
