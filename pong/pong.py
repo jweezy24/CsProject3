@@ -296,6 +296,8 @@ def first_phase():
     game_found = False
     message = "none"
     global local_username
+    global start
+    start = False
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
@@ -310,7 +312,7 @@ def first_phase():
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
             send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
             game_found = True
-            
+
         pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
