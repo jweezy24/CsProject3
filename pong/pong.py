@@ -161,7 +161,7 @@ def pong(player1_name, player2_name, message, game_server):
 
         # Stop the game if there is an imbalance of 3 points\
         if abs(score1 - score2) > 2:
-            if "tm" in message:
+            if "tm" in message["op"]:
                 victory_json = {"op":"tm_result", "winner":'', "loser":''}
             else:
                 victory_json = {"op":"game_over", "winner":'', "loser":''}
