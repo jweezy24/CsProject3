@@ -302,16 +302,14 @@ def first_phase():
         local_username = username
         if username == json_message["username1"][0]:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
+            print(game_server)
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
-        if next_round:
-            send_start(game_server)
-            pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
-            break
-        else:
-            send_start(game_server)
-            pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
-            break
+            print(game_server)
+
+        send_start(game_server)
+        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+
 
 if __name__ == '__main__':
     while True:

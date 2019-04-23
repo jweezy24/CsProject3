@@ -64,7 +64,8 @@ class match_maker:
                 dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
                 send_out_1 = json.dumps(dict)
                 self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
-        self.tournament.queue_up_next(player)
+                print(send_out_1)
+        #self.tournament.queue_up_next(player)
 
     def listen(self):
         message = ''

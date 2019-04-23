@@ -61,7 +61,11 @@ def listen(sock):
     while True:
         message, address = sock.recvfrom(1024)
         print(str(message) + "HERE")
-        packet = message
+        if b"tm match" in packet:
+            packet = message
+            return
+        else:
+            packet = message
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
