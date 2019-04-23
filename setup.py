@@ -1,7 +1,7 @@
 import sys
 import os
 
-os.system('export PYTHONPATH="$PYTHONPATH:$HOME/.python"')
+os.system('export PYTHONPATH="$PYTHONPATH:$HOME/CsProject3"')
 
 sys.path.append("./server")
 sys.path.append("./pong")
