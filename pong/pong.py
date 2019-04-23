@@ -46,7 +46,7 @@ packet = ''
 def send_start(game_server):
     global start
     sock2.settimeout(10)
-    print(game_server)
+    #print(game_server)
     while not start:
         try:
             sock.sendto("start".encode(), game_server)
@@ -57,7 +57,7 @@ def send_start(game_server):
             print(e)
 
 def send_info(json_message,game_server):
-    print(game_server)
+    print(str(game_server) + " send info")
     sock.sendto(str(json_message).encode(), game_server)
 
 def send_victory(json_message):
@@ -77,7 +77,7 @@ def listen():
     print("created thread")
     while True:
         message, address = sock2.recvfrom(1024)
-        print(message)
+        #print(str(message) + " in pong listener" )
         if b'start' in message:
             start = True
         packet = str(message)

@@ -60,13 +60,15 @@ def listen(sock, username):
     global packet
     while True:
         message, address = sock.recvfrom(1024)
-        print(str(message) + "HERE")
+        print(str(message) + " HERE")
         if b"tm match" in message and username in str(message):
             packet = message
             return
         elif b"match made" in message:
             packet = message
             return
+        else:
+            packet = b"waiting"
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -84,7 +86,6 @@ def game_intro(sock,sock2,sock3):
     display_searchSurf = None
     while intro:
         for event in pygame.event.get():
-            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -124,11 +125,12 @@ def game_intro(sock,sock2,sock3):
                 gameDisplay.blit(display_searchSurf,display_searchRect)
         send_info(sock,sock2)
         message = packet
+        print(str(message) + " in main menu thread main")
         if b'match made' in message:
             holder = message
             del message
             return(True, holder, username)
-        elif 'tm match' in str(message):
+        elif b'tm match' in message and username in str(message):
             holder = message
             del message
             return(True, holder, username)
