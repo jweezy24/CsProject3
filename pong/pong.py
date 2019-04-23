@@ -317,9 +317,6 @@ def first_phase():
             break
 
 if __name__ == '__main__':
-    global packet
-    global start
-    global next_round
     while True:
         first_phase()
         #reseting globals
