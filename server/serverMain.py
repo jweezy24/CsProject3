@@ -162,7 +162,7 @@ if __name__ == '__main__':
     while True:
         if options['t']:
             server.tourny = True
-            server.tourny_size = options['t']
+            server.tourny_size = int(options['t'])
             server.listen()
         else:
             print("no tourny")
