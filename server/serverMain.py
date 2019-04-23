@@ -161,7 +161,7 @@ if __name__ == '__main__':
     options = vars(parser.parse_args())
     while True:
         if options['t']:
-            server.tourny = True
+            server.isTourny = True
             server.tourny_size = int(options['t'])
             server.listen()
         else:
