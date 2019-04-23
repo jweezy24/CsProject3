@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/jweezy24/CsProject3.svg?branch=master)](https://travis-ci.com/jweezy24/CsProject3)
 
-Online Pong. Users can play matches of pong on a local network.
+Online Pong. Users can play matches of pong on a local network. *Does not work on windows.* 
 
 ## Getting Started
 
@@ -46,6 +46,8 @@ To run the local client, run the command `python3 /pong.py` in the ./pong direct
 Before running the code, you need to install the requirements. To do this run the command.
 
 `python3 -m pip install -r requirements.txt`
+
+After that we need to make sure everything is setup correctly. Run, `sudo python3 setup.py install`. This will install all local packages so that there are no module errors.
 
 Then you should be all set to go.
 

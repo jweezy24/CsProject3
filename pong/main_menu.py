@@ -64,22 +64,25 @@ def read_csv():
 
 def send_info(sock):
     username = read_csv()
-    print(username)
     dict = {'op': 'searching', 'username': username, "port":sock2.getsockname()[1]}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
-def create_listen_thread(sock):
-    t= threading.Thread(target=listen, args=(sock, ))
+def create_listen_thread(sock,username):
+    t= threading.Thread(target=listen, args=(sock, username,  ))
     threads.append(t)
     t.start()
 
-def listen(sock):
+def listen(sock, username):
     global packet
     while True:
         message, address = sock.recvfrom(1024)
         print(str(message) + "HERE")
-        packet = message
+        if b"tm match" in message and username in str(message):
+            packet = message
+            return
+        else:
+            packet = message
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -195,8 +198,9 @@ def menu():
 
 def game_intro(sock,sock2,sock3):
     global packet
-    create_listen_thread(sock3)
+    pygame.init()
     username = read_csv()
+    create_listen_thread(sock3, username)
     count = 0
     intro = True
     display_searchRect = None
@@ -244,9 +248,13 @@ def game_intro(sock,sock2,sock3):
         send_info(sock,sock2)
         message = packet
         if b'match made' in message:
-            return(True, message, username)
-
-
+            holder = message
+            del message
+            return(True, holder, username)
+        elif 'tm match' in str(message):
+            holder = message
+            del message
+            return(True, holder, username)
         pygame.display.update()
         clock.tick(15)
         count+=1

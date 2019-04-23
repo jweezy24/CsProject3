@@ -17,6 +17,8 @@ class match_maker:
         self.player_queue = []
         self.threads = []
         self.tournament = None
+        self.isTourny = False
+        self.tourny_in_progress = False
         self.tourny_size = 0
         self.init_network()
 
@@ -32,28 +34,53 @@ class match_maker:
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
     def create_tournament(self):
-        self.tournament = tourny(self.tourny_size)
+        self.tournament = tourny.Tournament(self.tourny_size)
 
     def add_player_to_tourny(self, player, address):
         self.tournament.add_players(player, address)
 
     def generate_bracket(self):
-        self.tournament.generate_matches()
-        print(self.tournament.matches)
+        print(self.tournament.generate_matches())
+
+    def play_tourny(self):
+        for i in self.tournament.matches:
+            print(i.data)
+            if i and "waiting" not in i.data:
+                player1 = (i.left.data[0], i.left.data[1])
+                player2 = (i.right.data[0], i.right.data[1])
+                self.tournament.matches.remove(i)
+                dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
+                send_out_1 = json.dumps(dict)
+                self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
+
+    def play_next_rount(self, player):
+        print(player)
+        for i in self.tournament.matches:
+            print(i.data)
+            if "waiting" in i.data:
+                player1 = (i.left.data[0], i.left.data[1])
+                player2 = (player[0], player[1])
+                self.tournament.matches.remove(i)
+                dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
+                send_out_1 = json.dumps(dict)
+                self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
+                print(send_out_1)
+        #self.tournament.queue_up_next(player)
 
     def listen(self):
         message = ''
         address = ''
         #creates a tournament object
-        if self.tourny:
-            self.create_tournament()
         try:
             message, address = self.server_socket.recvfrom(1024)
-            if len(self.player_queue) >= 2 and not self.tourny:
+            if len(self.player_queue) >= 2 and not self.isTourny:
                 self.match_players()
                 time.sleep(1)
-            elif len(self.player_queue) >= self.tourny_size and self.tourny:
+            elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
+                time.sleep(1)
+                self.tourny_in_progress = True
+                print(self.play_tourny())
 
         except socket.timeout:
             print("timeout")
@@ -62,19 +89,24 @@ class match_maker:
 
     def parse_json(self,packet,address):
         try:
-            print(address)
+            #print(address)
             json_message = json.loads(packet)
-            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.tourny:
+            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.isTourny:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
-            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and self.tourny:
+            if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny and not self.tourny_in_progress:
                 self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
+                print(json_message)
             if json_message["op"] == "game_over":
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
+            if json_message["op"] == "tm_result":
+                print(json_message)
+                time.sleep(3)
+                print(self.play_next_rount(json_message["winner"]))
 
 
         except NameError:
@@ -106,6 +138,7 @@ class match_maker:
         writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0,"wins",0])
         csv_file.close()
 
+    #TODO add a lobby check so extra packets aren't requeued
     def player_in_queue(self, name):
         for i in self.player_queue:
             if i[0] == name:
@@ -158,11 +191,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-t', help='To create a tournament -t <size of tourny>')
     options = vars(parser.parse_args())
+    server.isTourny = True
+    server.tourny_size = int(options['t'])
+    if server.isTourny:
+        server.create_tournament()
     while True:
-        if options['t']:
-            server.tourny = True
-            server.tourny_size = options['t']
-            server.listen()
-        else:
-            print("no tourny")
-            server.listen()
+        server.listen()

@@ -19,6 +19,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 threads = []
 
+next_round = False
 start = False
 
 MCAST_GRP = '224.0.0.251'
@@ -44,21 +45,19 @@ packet = ''
 
 def send_start(game_server):
     global start
-    sock2.settimeout(3)
-    try:
-        sock.sendto("start".encode(), game_server)
-        message,address = sock2.recvfrom(1024)
-        if b"start" in message:
-            start = True
-        sock.sendto("start".encode(), game_server)
-        message,address = sock2.recvfrom(1024)
-        if b'start' in message:
-            start = True
-    except Exception as e:
-        print(e)
+    sock2.settimeout(10)
+    print(game_server)
+    while not start:
+        try:
+            sock.sendto("start".encode(), game_server)
+            message,address = sock2.recvfrom(1024)
+            if b"start" in message:
+                start = True
+        except Exception as e:
+            print(e)
 
 def send_info(json_message,game_server):
-    #print(game_server)
+    print(game_server)
     sock.sendto(str(json_message).encode(), game_server)
 
 def send_victory(json_message):
@@ -74,12 +73,15 @@ def create_listen_thread():
 def listen():
     global packet
     global start
+    sock2.settimeout(10)
+    print("created thread")
     while True:
         message, address = sock2.recvfrom(1024)
-        #print(sock2.getsockname())
+        print(message)
         if b'start' in message:
             start = True
         packet = str(message)
+
 
 
 def pong(player1_name, player2_name, message, game_server):
@@ -157,30 +159,59 @@ def pong(player1_name, player2_name, message, game_server):
             dict_message["ball_x"] = ball.x
             dict_message["ball_y"] = ball.y
 
-        # Stop the game if there is an imbalance of 3 points
+        # Stop the game if there is an imbalance of 3 points\
         if abs(score1 - score2) > 2:
-            victory_json = {"op":"game_over", "winner":'', "loser":''}
+            if "tm" in message["op"]:
+                victory_json = {"op":"tm_result", "winner":'', "loser":''}
+            else:
+                victory_json = {"op":"game_over", "winner":'', "loser":''}
             print("in victory packet")
             done = True
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
-                victory_json.update({"winner":player1_name})
-                victory_json.update({"loser":player2_name})
+                if "tm" in message["op"]:
+                    if local_username == player1_name:
+                        victory_json.update({"winner":(player1_name, (message["username1"][1][0], sock2.getsockname()[1]))})
+                    victory_json.update({"loser":player2_name})
+                else:
+                    victory_json.update({"winner":player1_name})
+                    victory_json.update({"loser":player2_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
                     send_victory(json.dumps(victory_json))
-                    pygame.quit()
-                    sys.quit()
+                    movingsprites.remove(player1)
+                    movingsprites.remove(player2)
+                    movingsprites.remove(ball)
+                    balls.remove(ball)
+                    del player1
+                    del player2
+                    del ball
+                    time.sleep(2)
+                    packet = ''
+                    return
             else:
-                victory_json.update({"winner":player2_name})
-                victory_json.update({"loser":player1_name})
+                if "tm" in message["op"]:
+                    if local_username == player2_name:
+                        victory_json.update({"winner":(player2_name, (message["username2"][1][0], sock2.getsockname()[1]))})
+                    victory_json.update({"loser":player1_name})
+                else:
+                    victory_json.update({"winner":player2_name})
+                    victory_json.update({"loser":player1_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
-                if local_username == player1_name:
+                if local_username == player2_name:
                     send_victory(json.dumps(victory_json))
-                    pygame.quit()
-                    sys.exit()
+                    movingsprites.remove(player1)
+                    movingsprites.remove(player2)
+                    movingsprites.remove(ball)
+                    balls.remove(ball)
+                    del player1
+                    del player2
+                    del ball
+                    time.sleep(2)
+                    packet = ''
+                    return
             pygame.quit()
             sys.exit()
         if not done:
@@ -260,6 +291,7 @@ def pong(player1_name, player2_name, message, game_server):
 
         clock.tick(30)
 
+
 def first_phase():
     game_found = False
     in_menu = True
@@ -267,6 +299,8 @@ def first_phase():
     global local_username
     while in_menu:
         in_menu = main_menu.menu()
+    global start
+    start = False
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
@@ -275,11 +309,21 @@ def first_phase():
         local_username = username
         if username == json_message["username1"][0]:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
+            send_start((json_message["username2"][1][0], json_message["username2"][1][1]))
+            game_found = True
         else:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
-        send_start(game_server)
-        pong(json_message["username1"][0], json_message["username2"][0], message, game_server)
+            send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
+            game_found = True
+
+        pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
+
 
 if __name__ == '__main__':
-    first_phase()
+    while True:
+        first_phase()
+        #reseting globals
+        next_round = False
+        start = False
+        packet = ''
     pygame.quit()
