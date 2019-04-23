@@ -159,7 +159,7 @@ def pong(player1_name, player2_name, message, game_server):
             dict_message["ball_x"] = ball.x
             dict_message["ball_y"] = ball.y
 
-        # Stop the game if there is an imbalance of 3 points
+        # Stop the game if there is an imbalance of 3 points\
         if abs(score1 - score2) > 2:
             if "tm" in message:
                 victory_json = {"op":"tm_result", "winner":'', "loser":''}
@@ -169,7 +169,7 @@ def pong(player1_name, player2_name, message, game_server):
             done = True
             #if the difference is positive then score1 won => player 1 victory
             if score1 - score2 > 0:
-                if "tm" in str(message):
+                if "tm" in message["op"]:
                     victory_json.update({"winner":(player1_name, (message["username1"][1][0], sock2.getsockname()[1]))})
                     victory_json.update({"loser":player2_name})
                 else:
@@ -190,7 +190,7 @@ def pong(player1_name, player2_name, message, game_server):
                     packet = ''
                     return
             else:
-                if "tm" in str(message):
+                if "tm" in message["op"]:
                     victory_json.update({"winner":(player2_name, (message["username2"][1][0], sock2.getsockname()[1]))})
                     victory_json.update({"loser":player1_name})
                 else:
