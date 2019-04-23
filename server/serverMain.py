@@ -104,6 +104,7 @@ class match_maker:
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
             if json_message["op"] == "tm_result":
+                print(json_message)
                 print(self.play_next_rount(json_message["winner"]))
 
 

@@ -171,8 +171,9 @@ def pong(player1_name, player2_name, message, game_server):
                 if "tm" in message:
                     victory_json.update({"winner":(player1_name, game_server)})
                     victory_json.update({"loser":player2_name})
-                victory_json.update({"winner":player1_name})
-                victory_json.update({"loser":player2_name})
+                else:
+                    victory_json.update({"winner":player1_name})
+                    victory_json.update({"loser":player2_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
@@ -183,8 +184,9 @@ def pong(player1_name, player2_name, message, game_server):
                 if "tm" in message:
                     victory_json.update({"winner":(player2_name, game_server)})
                     victory_json.update({"loser":player1_name})
-                victory_json.update({"winner":player2_name})
-                victory_json.update({"loser":player1_name})
+                else:
+                    victory_json.update({"winner":player2_name})
+                    victory_json.update({"loser":player1_name})
                 #we also only want to send the victory message once
                 #to do this we make sure that the username local to the player is player1
                 if local_username == player1_name:
