@@ -44,7 +44,7 @@ class match_maker:
     def play_tourny(self):
         for i in self.tournament.matches:
             print(i.data[0])
-            if "waiting" not in i.data[0]:
+            if i and "waiting" not in i.data:
                 player1 = (i.left.data[0], i.left.data[1])
                 player2 = (i.right.data[0], i.right.data[1])
                 dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
