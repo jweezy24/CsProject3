@@ -47,7 +47,6 @@ def read_csv():
 
 def send_info(sock, sock2):
     username = read_csv()
-    print(username)
     dict = {'op': 'searching', 'username': username, "port":sock2.getsockname()[1]}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
@@ -119,7 +118,7 @@ def game_intro(sock,sock2,sock3):
                 gameDisplay.blit(display_searchSurf,display_searchRect)
         send_info(sock,sock2)
         message = packet
-        if b'match made' in message:
+        if b'match made' in message or b'tm match' in message:
             return(True, message, username)
 
         pygame.display.update()

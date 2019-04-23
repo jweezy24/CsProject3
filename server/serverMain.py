@@ -39,8 +39,15 @@ class match_maker:
         self.tournament.add_players(player, address)
 
     def generate_bracket(self):
-        time.sleep(1)
-        print(self.tournament.generate_matches())
+        self.tournament.generate_matches()
+
+    def play_tourny(self):
+        for i in self.tournament.matches:
+            player1 = (i.left.data[0], i.left.data[1])
+            player2 = (i.right.data[0], i.right.data[1])
+            dict = {"op":" tm match ", "username1": (player1[0], player1[1]), "username2": (player2[0], player2[1])}
+            send_out_1 = json.dumps(dict)
+            self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
     def listen(self):
         message = ''
@@ -53,7 +60,7 @@ class match_maker:
                 time.sleep(1)
             elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
-                pass
+                self.play_tourny()
 
         except socket.timeout:
             print("timeout")
@@ -61,7 +68,7 @@ class match_maker:
         self.parse_json(message,address)
 
     def parse_json(self,packet,address):
-        #try:
+        try:
             #print(address)
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.isTourny:
@@ -70,15 +77,17 @@ class match_maker:
                     self.write_player_to_memory(json_message["username"])
             if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny:
                 self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
-                print(self.tournament.players)
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
+                print(self.tournament.matches)
             if json_message["op"] == "game_over":
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
+            if json_message["op"] == "tm_result":
+                pass
 
 
-        #except NameError:
+        except NameError:
             print('Incorrect Json format')
 
     def new_player(self, name):
@@ -107,6 +116,7 @@ class match_maker:
         writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0,"wins",0])
         csv_file.close()
 
+    #TODO add a lobby check so extra packets aren't requeued
     def player_in_queue(self, name):
         for i in self.player_queue:
             if i[0] == name:
