@@ -24,8 +24,12 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         # Get attributes for the height/width of the screen
-        self.screenheight = pygame.display.get_surface().get_height()
-        self.screenwidth = pygame.display.get_surface().get_width()
+        try:
+            self.screenheight = pygame.display.get_surface().get_height()
+            self.screenwidth = pygame.display.get_surface().get_width()
+        except Exception as e:
+            print(e)
+            self.screenwidth = 800
 
         # Speed in pixels per cycle
         self.speed = 0
@@ -50,7 +54,7 @@ class Ball(pygame.sprite.Sprite):
     def reset(self, winner):
         self.x = 400
         self.y = 350.0
-        self.speed=8.0
+        self.speed=16.0
 
         # Direction of ball (in degrees)
         if winner == "R":

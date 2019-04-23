@@ -27,6 +27,7 @@ pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
 threads = []
 local_server = ("<broadcast>", 7999)
+packet = b''
 
 def readrank_csv():
     file = open('./config.csv')
@@ -64,7 +65,7 @@ def read_csv():
 def send_info(sock):
     username = read_csv()
     print(username)
-    dict = {'op': 'searching', 'username': username}
+    dict = {'op': 'searching', 'username': username, "port":sock2.getsockname()[1]}
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
@@ -74,9 +75,11 @@ def create_listen_thread(sock):
     t.start()
 
 def listen(sock):
+    global packet
     while True:
         message, address = sock.recvfrom(1024)
-        threads[0].name = message
+        print(str(message) + "HERE")
+        packet = message
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -190,8 +193,10 @@ def menu():
 
     return (intro)
 
-def game_intro(sock):
-    create_listen_thread(sock)
+def game_intro(sock,sock2,sock3):
+    global packet
+    create_listen_thread(sock3)
+    username = read_csv()
     count = 0
     intro = True
     display_searchRect = None
@@ -236,10 +241,11 @@ def game_intro(sock):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock)
-        message = threads[0].name
-        if "match made" in message:
-            return(True, message)
+        send_info(sock,sock2)
+        message = packet
+        if b'match made' in message:
+            return(True, message, username)
+
 
         pygame.display.update()
         clock.tick(15)

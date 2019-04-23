@@ -5,6 +5,9 @@ import sys
 import json
 import csv
 import threading
+import struct
+import argparse
+import server.tournamentMode as tourny
 
 class match_maker:
     def __init__(self):
@@ -13,20 +16,45 @@ class match_maker:
         self.lobbies = []
         self.player_queue = []
         self.threads = []
+        self.tournament = None
+        self.tourny_size = 0
         self.init_network()
+
     def init_network(self):
+        #get multicast address linux netstat -anu|sort -nk4
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server_socket.bind(('0.0.0.0',7999))
         self.lobby_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.lobby_socket.bind(('0.0.0.0',8001))
+        self.MCAST_GRP = '224.0.0.251'
+        self.MCAST_PORT = 5007
+        self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
+
+    def create_tournament(self):
+        self.tournament = tourny(self.tourny_size)
+
+    def add_player_to_tourny(self, player, address):
+        self.tournament.add_players(player, address)
+
+    def generate_bracket(self):
+        self.tournament.generate_matches()
+        print(self.tournament.matches)
 
     def listen(self):
         message = ''
         address = ''
+        #creates a tournament object
+        if self.tourny:
+            self.create_tournament()
         try:
             message, address = self.server_socket.recvfrom(1024)
-            if len(self.player_queue) >= 2:
+            if len(self.player_queue) >= 2 and not self.tourny:
                 self.match_players()
+                time.sleep(1)
+            elif len(self.player_queue) >= self.tourny_size and self.tourny:
+                self.generate_bracket()
+
         except socket.timeout:
             print("timeout")
             return
@@ -36,10 +64,17 @@ class match_maker:
         try:
             print(address)
             json_message = json.loads(packet)
-            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
+            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.tourny:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
+            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and self.tourny:
+                self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
+                if self.new_player(json_message["username"]):
+                    self.write_player_to_memory(json_message["username"])
+            if json_message["op"] == "game_over":
+                print("got packet to update winrate")
+                self.update_winrate(json_message["winner"], json_message["loser"])
 
 
         except NameError:
@@ -68,7 +103,7 @@ class match_maker:
         writer = csv.writer(csv_file)
         for i in rows:
             writer.writerow(i)
-        writer.writerow(["username", name, "rank", 0])
+        writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0,"wins",0])
         csv_file.close()
 
     def player_in_queue(self, name):
@@ -89,43 +124,45 @@ class match_maker:
         self.lobbies.append(("playing", player1, player2))
         t.start()
 
+    def update_winrate(self, winner, loser):
+        rows = []
+        old_csv = open('./allPlayers.csv', newline='')
+        reader = csv.reader(old_csv)
+        for row in reader:
+            rows.append(row)
+        old_csv.close()
+        csv_file = open('./allPlayers.csv', 'w', newline='')
+        writer = csv.writer(csv_file)
+        for i in range(0,len(rows)):
+            if rows[i][1] == winner:
+                #adding the game to the user
+                print(rows[i][5])
+                rows[i][5] = str(int(rows[i][5])+1)
+                #adding a win for the user
+                rows[i][9] = str(int(rows[i][9])+1)
+                #writing the winrate up to two decimal places
+                rows[i][7] = float("{0:.2f}".format(float(int(rows[i][9]) / int(rows[i][5]))))
+        for i in rows:
+            writer.writerow(i)
+        csv_file.close()
 
-    #commented out central server model
-    # def play_game(self, player1, player2):
-    #     dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0] }
-    #     dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
-    #     json_message = json.dumps(dict)
-    #     json_message2 = json.dumps(dict2)
-    #     print(player1)
-    #     print(player2)
-    #     self.server_socket.sendto(json_message2.encode(), player1[2])
-    #     print("one mesage sent")
-    #     self.server_socket.sendto(json_message.encode(), player2[2])
-    #     print("second message sent")
-    #     while True:
-    #         send_out = {'local_movement': 0, 'away_movement': 0}
-    #         message, address = self.lobby_socket.recvfrom(1024)
-    #         json_message = json.loads(message)
-    #         if address == player1[2]:
-    #             send_out["away_movement"] = int(json_message["move"])
-    #             json_message_temp = json.dumps(send_out)
-    #             self.lobby_socket.sendto(json_message_temp.encode(), player2[2])
-    #             send_out["away_movement"] = 0
-    #             send_out["local_movement"] = int(json_message["move"])
-    #             json_message_temp = json.dumps(send_out)
-    #             self.lobby_socket.sendto(json_message_temp.encode(), player1[2])
+
 
     def play_game(self,player1, player2):
-        dict = {"op":" match made ", "player": player2[2], "username_local": player1[0], "username_away": player2[0]}
-        dict2 = {"op":" match made ", "player": player1[2], "username_local": player2[0], "username_away": player1[0]}
+        dict = {"op":" match made ", "username1": (player1[0], player1[2]), "username2": (player2[0], player2[2])}
         send_out_1 = json.dumps(dict)
-        send_out_2 = json.dumps(dict2)
-        print(str(player1[2]) + "HERE")
-        print(str(player2[2]) + "HERE")
-        self.lobby_socket.sendto(send_out_1.encode(), player1[2])
-        self.lobby_socket.sendto(send_out_2.encode(), player2[2])
+        self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
-server = match_maker()
-
-while True:
-    server.listen()
+if __name__ == '__main__':
+    server = match_maker()
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('-t', help='To create a tournament -t <size of tourny>')
+    options = vars(parser.parse_args())
+    while True:
+        if options['t']:
+            server.tourny = True
+            server.tourny_size = options['t']
+            server.listen()
+        else:
+            print("no tourny")
+            server.listen()
