@@ -51,7 +51,7 @@ def send_info(sock, sock2):
     json_message = json.dumps(dict)
     sock.sendto(str(json_message).encode(), local_server)
 
-def create_listen_thread(sock,username):
+def create_listen_thread(sock):
     t= threading.Thread(target=listen, args=(sock, ))
     threads.append(t)
     t.start()
@@ -60,15 +60,8 @@ def listen(sock):
     global packet
     while True:
         message, address = sock.recvfrom(1024)
-        print(str(message) + " HERE")
-        if b"tm match" in message:
-            packet = message
-            break
-        elif b"match made" in message:
-            packet = message
-            break
-        else:
-            packet = b"waiting"
+        print(str(message) + "HERE")
+        packet = message
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -78,15 +71,15 @@ def text_objects(text, font):
 def game_intro(sock,sock2,sock3):
     global packet
     pygame.init()
+    create_listen_thread(sock3)
     username = read_csv()
-    if len(threads) <= 1:
-        create_listen_thread(sock3, username)
     count = 0
     intro = True
     display_searchRect = None
     display_searchSurf = None
     while intro:
         for event in pygame.event.get():
+            print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
@@ -126,20 +119,9 @@ def game_intro(sock,sock2,sock3):
                 gameDisplay.blit(display_searchSurf,display_searchRect)
         send_info(sock,sock2)
         message = packet
-        if b'match made' in message:
-            #print(str(message) + " message before reassignment in main menu")
-            holder = message
-            #print(str(message) + " message after reassignment in main menu")
-            #print(str(holder) + " holder after reassignment in main menu")
-            del message
-            return(True, holder, username)
-        elif b'tm match' in message:
-            #print(str(message) + " message before reassignment in main menu")
-            holder = message
-            #print(str(message) + " message after reassignment in main menu")
-            print(str(holder) + " holder after reassignment in main menu")
-            del message
-            return(True, holder, username)
+        if b'match made' in message or b'tm match' in message and username in str(message):
+            return(True, message, username)
+
         pygame.display.update()
         clock.tick(15)
         count+=1
