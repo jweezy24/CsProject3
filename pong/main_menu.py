@@ -123,11 +123,14 @@ def game_intro(sock,sock2,sock3):
                 gameDisplay.blit(display_searchSurf,display_searchRect)
         send_info(sock,sock2)
         message = packet
-        if b'match made' in message or b'tm match' in message and username in str(message):
+        if b'match made' in message:
             holder = message
             del message
             return(True, holder, username)
-
+        elif b'tm match' in message and username in str(message):
+            holder = message
+            del message
+            return(True, holder, username)
         pygame.display.update()
         clock.tick(15)
         count+=1
