@@ -127,17 +127,17 @@ def game_intro(sock,sock2,sock3):
         send_info(sock,sock2)
         message = packet
         if b'match made' in message:
-            print(str(message) + " message before reassignment in main menu")
+            #print(str(message) + " message before reassignment in main menu")
             holder = message
-            print(str(message) + " message after reassignment in main menu")
-            print(str(holder) + " holder after reassignment in main menu")
+            #print(str(message) + " message after reassignment in main menu")
+            #print(str(holder) + " holder after reassignment in main menu")
             del message
             return(True, holder, username)
         elif b'tm match' in message:
-            print(str(message) + " message before reassignment in main menu")
+            #print(str(message) + " message before reassignment in main menu")
             holder = message
-            print(str(message) + " message after reassignment in main menu")
-            print(str(holder) + " holder after reassignment in main menu")
+            #print(str(message) + " message after reassignment in main menu")
+            #print(str(holder) + " holder after reassignment in main menu")
             del message
             return(True, holder, username)
         pygame.display.update()

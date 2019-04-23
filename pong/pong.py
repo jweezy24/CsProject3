@@ -58,7 +58,7 @@ def send_start(game_server):
             print(e)
 
 def send_info(json_message,game_server):
-    print(str(game_server) + " send info")
+    #print(str(game_server) + " send info")
     sock.sendto(str(json_message).encode(), game_server)
 
 def send_victory(json_message):
@@ -308,18 +308,18 @@ def first_phase():
 
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-            print(str(json_message) + " json message in first phase")
+            #print(str(json_message) + " json message in first phase")
 
         local_username = username
 
         if previous_player != json_message["username1"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username1"][0]
             player_found = True
-            print(previous_player + " is the previous_player")
+            #print(previous_player + " is the previous_player")
 
         elif previous_player != json_message["username2"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username2"][0]
-            print(previous_player + " is the previous_player")
+            #print(previous_player + " is the previous_player")
             player_found = True
 
         if username == json_message["username1"][0] and player_found:
@@ -333,6 +333,7 @@ def first_phase():
             game_found = True
 
         if game_found and type(game_server) == type(('test', 'tup')):
+            print("game_server")
             pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
