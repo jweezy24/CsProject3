@@ -7,7 +7,7 @@ import csv
 import threading
 import struct
 import argparse
-import tournamentMode as tourny
+import server.tournamentMode as tourny
 
 class match_maker:
     def __init__(self):
@@ -31,13 +31,8 @@ class match_maker:
         self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
-<<<<<<< HEAD
     def create_tournament(self):
         self.tournament = tourny(self.tourny_size)
-=======
-    def create_tournament(self, size):
-        self.tournament = tourny.Tournament(size)
->>>>>>> 2de13724be1fa97388f632e6664b3bc550503f4c
 
     def add_player_to_tourny(self, player, address):
         self.tournament.add_players(player, address)

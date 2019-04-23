@@ -1,2 +1,2 @@
-from .Node import *
-from .BTree import *
+from . import Node
+from . import BTree

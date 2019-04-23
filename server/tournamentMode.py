@@ -1,5 +1,5 @@
-import Tree.BTree as BTree
-import Tree.Node as Node
+import server.Tree.BTree as BTree
+import server.Tree.Node as Node
 
 class Tournament:
 
@@ -9,7 +9,7 @@ class Tournament:
         self.matches = []
 
     def add_players(self, username, address):
-        self.players.append(Node([username, address]))
+        self.players.append(Node.Node([username, address]))
 
     def generate_matches(self):
         for i in range(0,players):
@@ -18,5 +18,3 @@ class Tournament:
                 tempNode.left = players[i]
                 tempNode.right = players[i+1]
                 self.matches.append(tempNode)
-
-    
