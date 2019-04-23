@@ -61,7 +61,6 @@ def listen(sock):
     while True:
         message, address = sock.recvfrom(1024)
         print(str(message) + " HERE")
-        print(str(username) + " HERE")
         if b"tm match" in message:
             packet = message
             break
