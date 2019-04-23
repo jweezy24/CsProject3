@@ -294,7 +294,7 @@ def pong(player1_name, player2_name, message, game_server):
 
 
 def first_phase():
-     game_found = False
+    game_found = False
     message = "none"
     global local_username
     previous_player = ''
