@@ -294,24 +294,17 @@ def pong(player1_name, player2_name, message, game_server):
 
 
 def first_phase():
-    game_found = False
+     game_found = False
     message = "none"
     global local_username
-    global start
-    global previous_player
-    start = False
-    player_found = False
-    game_server = ''
-    game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
-    if game_found:
+    previous_player = ''
+    while not game_found:
+        game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
-
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-            #print(str(json_message) + " json message in first phase")
 
         local_username = username
-
         if previous_player != json_message["username1"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username1"][0]
             player_found = True
@@ -324,20 +317,15 @@ def first_phase():
 
         if username == json_message["username1"][0] and player_found:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
-            send_start((json_message["username2"][1][0], json_message["username2"][1][1]))
-            game_found = True
+            send_start(game_server)
 
         elif username == json_message["username2"][0] and player_found:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
-            send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
-            game_found = True
+            send_start(game_server)
 
-        print("inside this shit")
-        if game_found and type(game_server) == type(('test', 'tup')):
-            pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
+        pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
 if __name__ == '__main__':
-    while True:
-        first_phase()
+    first_phase()
     pygame.quit()
