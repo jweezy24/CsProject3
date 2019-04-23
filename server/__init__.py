@@ -1,2 +1,3 @@
-from .Tree import *
-from .serverMain import *
+from . import Tree
+from . import serverMain
+from . import tournamentMode
