@@ -21,6 +21,7 @@ threads = []
 
 next_round = False
 start = False
+previous_player = ''
 
 MCAST_GRP = '224.0.0.251'
 MCAST_PORT = 5007
@@ -297,7 +298,9 @@ def first_phase():
     message = "none"
     global local_username
     global start
+    global previous_player
     start = False
+    player_found = False
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
@@ -307,11 +310,19 @@ def first_phase():
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
             print(str(json_message) + " json message in first phase")
         local_username = username
-        if username == json_message["username1"][0]:
+
+        if previous_player != json_message["username1"][0] and json_message["username1"][0 != local_username]:
+            previous_player = json_message["username1"][0]
+            player_found = True
+        elif previous_player != json_message["username2"][0] and json_message["username1"][0 != local_username]:
+            previous_player = json_message["username2"][0]
+            player_found = True
+
+        if username == json_message["username1"][0] and player_found:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
             send_start((json_message["username2"][1][0], json_message["username2"][1][1]))
             game_found = True
-        else:
+        elif username == json_message["username2"][0] and player_found:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
             send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
             game_found = True
