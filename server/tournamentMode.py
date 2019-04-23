@@ -9,12 +9,22 @@ class Tournament:
         self.matches = []
 
     def add_players(self, username, address):
-        self.players.append(Node.Node([username, address]))
+        tempNode = Node.Node([username, address])
+        self.players.append(tempNode)
+
+    def get_total_players(self):
+        return len(self.players)
+
+    def player_in_tournament(self, username):
+        for i in self.players:
+            if i.data[0] == username:
+                return True
+        return False
 
     def generate_matches(self):
-        for i in range(0,players):
+        for i in range(0, len(self.players)):
             if i%2 == 0:
-                tempNode = Node(players[i].data[0] + " vs. " + players[i+1].data[0])
-                tempNode.left = players[i]
-                tempNode.right = players[i+1]
+                tempNode = Node.Node(self.players[i].data[0] + " vs. " + self.players[i+1].data[0])
+                tempNode.left = self.players[i]
+                tempNode.right = self.players[i+1]
                 self.matches.append(tempNode)

@@ -39,22 +39,21 @@ class match_maker:
         self.tournament.add_players(player, address)
 
     def generate_bracket(self):
-        self.tournament.generate_matches()
-        print(self.tournament.matches)
+        time.sleep(1)
+        print(self.tournament.generate_matches())
 
     def listen(self):
         message = ''
         address = ''
         #creates a tournament object
-        if self.isTourny:
-            self.create_tournament()
         try:
             message, address = self.server_socket.recvfrom(1024)
             if len(self.player_queue) >= 2 and not self.isTourny:
                 self.match_players()
                 time.sleep(1)
-            elif len(self.player_queue) >= self.tourny_size and self.isTourny:
+            elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
+                pass
 
         except socket.timeout:
             print("timeout")
@@ -62,15 +61,16 @@ class match_maker:
         self.parse_json(message,address)
 
     def parse_json(self,packet,address):
-        try:
-            print(address)
+        #try:
+            #print(address)
             json_message = json.loads(packet)
             if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.isTourny:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
-            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and self.isTourny:
+            if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny:
                 self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
+                print(self.tournament.players)
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
             if json_message["op"] == "game_over":
@@ -78,7 +78,7 @@ class match_maker:
                 self.update_winrate(json_message["winner"], json_message["loser"])
 
 
-        except NameError:
+        #except NameError:
             print('Incorrect Json format')
 
     def new_player(self, name):
@@ -159,11 +159,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-t', help='To create a tournament -t <size of tourny>')
     options = vars(parser.parse_args())
+    server.isTourny = True
+    server.tourny_size = int(options['t'])
+    if server.isTourny:
+        server.create_tournament()
     while True:
-        if options['t']:
-            server.isTourny = True
-            server.tourny_size = int(options['t'])
-            server.listen()
-        else:
-            print("no tourny")
-            server.listen()
+        server.listen()
