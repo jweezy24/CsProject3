@@ -4,9 +4,9 @@ import server.Tree.Node as Node
 
 class TestNodeMethods(unittest.TestCase):
     def setUp(self):
-        self.node = Node("jweezy")
-        self.tempNode = Node("test")
-        self.tempNode2 = Node("test2")
+        self.node = Node.Node("jweezy")
+        self.tempNode = Node.Node("test")
+        self.tempNode2 = Node.Node("test2")
 
     def test_init(self):
         self.assertTrue(self.node.data == "jweezy")
