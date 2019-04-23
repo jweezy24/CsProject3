@@ -33,7 +33,7 @@ class match_maker:
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
     def create_tournament(self):
-        self.tournament = tourny(self.tourny_size)
+        self.tournament = tourny.Tournament(self.tourny_size)
 
     def add_player_to_tourny(self, player, address):
         self.tournament.add_players(player, address)
