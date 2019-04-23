@@ -301,11 +301,11 @@ def first_phase():
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
-        print(message + " message recieved in first phase")
+        print(str(message) + " message recieved in first phase")
         print(username + " username in first phase")
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
-            print(json_message + " json message in first phase")
+            print(str(json_message) + " json message in first phase")
         local_username = username
         if username == json_message["username1"][0]:
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
