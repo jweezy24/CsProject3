@@ -17,6 +17,7 @@ class match_maker:
         self.player_queue = []
         self.threads = []
         self.tournament = None
+        self.tourny = False
         self.tourny_size = 0
         self.init_network()
 
