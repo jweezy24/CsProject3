@@ -62,7 +62,7 @@ def listen(sock, username):
         message, address = sock.recvfrom(1024)
         print(str(message) + " HERE")
         print(str(username) + " HERE")
-        if b"tm match" in message:
+        if b"tm match" in message and username in str(message):
             packet = message
             break
         elif b"match made" in message:
@@ -131,7 +131,7 @@ def game_intro(sock,sock2,sock3):
             holder = message
             del message
             return(True, holder, username)
-        elif b'tm match' in message and username in str(message):
+        elif b'tm match' in message:
             holder = message
             del message
             return(True, holder, username)
