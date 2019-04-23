@@ -44,7 +44,7 @@ packet = ''
 
 def send_start(game_server):
     global start
-    sock2.settimeout(5)
+    sock2.settimeout(10)
     try:
         sock.sendto("start".encode(), game_server)
         message,address = sock2.recvfrom(1024)
@@ -74,7 +74,7 @@ def create_listen_thread():
 def listen():
     global packet
     global start
-    sock2.settimeout(3)
+    sock2.settimeout(10)
     while True:
         message, address = sock2.recvfrom(1024)
         #print(sock2.getsockname())
@@ -181,6 +181,7 @@ def pong(player1_name, player2_name, message, game_server):
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
                     pygame.quit()
+                    pygame.init()
                     first_phase()
             else:
                 if "tm" in message:
@@ -195,6 +196,7 @@ def pong(player1_name, player2_name, message, game_server):
                     send_victory(json.dumps(victory_json))
                     time.sleep(2)
                     pygame.quit()
+                    pygame.init()
                     first_phase()
             pygame.quit()
             sys.exit()
