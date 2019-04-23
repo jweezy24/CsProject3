@@ -105,6 +105,7 @@ class match_maker:
                 self.update_winrate(json_message["winner"], json_message["loser"])
             if json_message["op"] == "tm_result":
                 print(json_message)
+                time.sleep(3)
                 print(self.play_next_rount(json_message["winner"]))
 
 
