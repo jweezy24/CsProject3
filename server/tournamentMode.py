@@ -3,10 +3,13 @@ import server.Tree.Node as Node
 
 class Tournament:
 
-    def __init__(self,size,players):
+    def __init__(self,size):
         self.size = size
-        self.players = players
+        self.players = []
         self.matches = []
+
+    def add_players(self, username, address):
+        self.players.append(Node([username, address]))
 
     def generate_bracket(self):
         pass

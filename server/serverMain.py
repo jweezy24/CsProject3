@@ -6,6 +6,8 @@ import json
 import csv
 import threading
 import struct
+import argparse
+import server.tournamentMode as tourny
 
 class match_maker:
     def __init__(self):
@@ -14,7 +16,10 @@ class match_maker:
         self.lobbies = []
         self.player_queue = []
         self.threads = []
+        self.tournament = None
+        self.tourny_size = 0
         self.init_network()
+
     def init_network(self):
         #get multicast address linux netstat -anu|sort -nk4
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -26,13 +31,21 @@ class match_maker:
         self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
+    def create_tournament(self, size):
+        self.tournament = tourny(size)
+
+
     def listen(self):
         message = ''
         address = ''
         try:
             message, address = self.server_socket.recvfrom(1024)
-            if len(self.player_queue) >= 2:
+            if len(self.player_queue) >= 2 and not self.tourny:
                 self.match_players()
+                time.sleep(1)
+            elif len(self.player_queue) >= self.tourny_size and self.tourny:
+                self.generate
+
         except socket.timeout:
             print("timeout")
             return
@@ -127,7 +140,16 @@ class match_maker:
         send_out_1 = json.dumps(dict)
         self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
 
-server = match_maker()
 if __name__ == '__main__':
+    server = match_maker()
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('-t', help='To create a tournament -t <size of tourny>')
+    options = vars(parser.parse_args())
     while True:
-        server.listen()
+        if options['t']:
+            server.tourny = True
+            server.tourny_size = options['t']
+            server.listen()
+        else:
+            print("no tourny")
+            server.listen()
