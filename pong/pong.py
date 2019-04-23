@@ -306,7 +306,7 @@ def first_phase():
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
 
         local_username = username
-        if previous_player != json_message["username1"][0] and json_message["username1"][0] != local_username:
+        if previous_player != json_message["username1"][0] and json_message["username2"][0] != local_username:
             previous_player = json_message["username1"][0]
             player_found = True
             #print(previous_player + " is the previous_player")
@@ -329,7 +329,7 @@ def first_phase():
         else:
             continue
 
-            
+
         if game_found:
             pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
