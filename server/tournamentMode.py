@@ -11,12 +11,12 @@ class Tournament:
     def add_players(self, username, address):
         self.players.append(Node([username, address]))
 
-    def generate_bracket(self):
-        pass
-
     def generate_matches(self):
         for i in range(0,players):
             if i%2 == 0:
-                tempNode = Node(str(i/2))
-                tempNode.left = Node(players[i])
-                tempNode.right = Node(players[i+1])
+                tempNode = Node(players[i].data[0] + " vs. " + players[i+1].data[0])
+                tempNode.left = players[i]
+                tempNode.right = players[i+1]
+                self.matches.append(tempNode)
+
+    

@@ -31,20 +31,29 @@ class match_maker:
         self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
-    def create_tournament(self, size):
-        self.tournament = tourny(size)
+    def create_tournament(self):
+        self.tournament = tourny(self.tourny_size)
 
+    def add_player_to_tourny(self, player, address):
+        self.tournament.add_players(player, address)
+
+    def generate_bracket(self):
+        self.tournament.generate_matches()
+        print(self.tournament.matches)
 
     def listen(self):
         message = ''
         address = ''
+        #creates a tournament object
+        if self.tourny:
+            self.create_tournament()
         try:
             message, address = self.server_socket.recvfrom(1024)
             if len(self.player_queue) >= 2 and not self.tourny:
                 self.match_players()
                 time.sleep(1)
             elif len(self.player_queue) >= self.tourny_size and self.tourny:
-                self.generate
+                self.generate_bracket()
 
         except socket.timeout:
             print("timeout")
@@ -55,8 +64,12 @@ class match_maker:
         try:
             print(address)
             json_message = json.loads(packet)
-            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']):
+            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and not self.tourny:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
+                if self.new_player(json_message["username"]):
+                    self.write_player_to_memory(json_message["username"])
+            if json_message["op"] == "searching" and not self.player_in_queue(json_message['username']) and self.tourny:
+                self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
             if json_message["op"] == "game_over":
