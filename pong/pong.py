@@ -58,7 +58,7 @@ def send_start(game_server):
             print(e)
 
 def send_info(json_message,game_server):
-    #print(str(game_server) + " send info")
+    print(str(game_server) + " send info")
     sock.sendto(str(json_message).encode(), game_server)
 
 def send_victory(json_message):
@@ -306,9 +306,11 @@ def first_phase():
         message = str(message)
         print(str(message) + " message recieved in first phase")
         print(username + " username in first phase")
+
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
             print(str(json_message) + " json message in first phase")
+
         local_username = username
 
         if previous_player != json_message["username1"][0] and json_message["username1"][0 != local_username]:
@@ -322,6 +324,7 @@ def first_phase():
             game_server = (json_message["username2"][1][0], json_message["username2"][1][1])
             send_start((json_message["username2"][1][0], json_message["username2"][1][1]))
             game_found = True
+
         elif username == json_message["username2"][0] and player_found:
             game_server = (json_message["username1"][1][0], json_message["username1"][1][1])
             send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
