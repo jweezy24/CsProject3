@@ -42,6 +42,7 @@ class match_maker:
         self.tournament.generate_matches()
 
     def play_tourny(self):
+        print("HERE")
         for i in self.tournament.matches:
             player1 = (i.left.data[0], i.left.data[1])
             player2 = (i.right.data[0], i.right.data[1])
