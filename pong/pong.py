@@ -298,6 +298,7 @@ def first_phase():
     message = "none"
     global local_username
     previous_player = ''
+    player_found = False
     while not game_found:
         game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
         message = str(message)
