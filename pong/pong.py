@@ -57,7 +57,7 @@ def send_start(game_server):
             print(e)
 
 def send_info(json_message,game_server):
-    print(str(game_server) + " send info")
+    #print(str(game_server) + " send info")
     sock.sendto(str(json_message).encode(), game_server)
 
 def send_victory(json_message):
