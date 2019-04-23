@@ -64,8 +64,9 @@ def listen(sock, username):
         if b"tm match" in message and username in str(message):
             packet = message
             return
-        else:
+        elif b"match made" in message:
             packet = message
+            return
 
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
