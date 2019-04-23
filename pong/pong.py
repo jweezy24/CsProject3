@@ -332,7 +332,7 @@ def first_phase():
             send_start((json_message["username1"][1][0], json_message["username1"][1][1]))
             game_found = True
 
-        if game_found:
+        if game_found and type(game_server) == type(('test', 'tup')):
             pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
 
 
