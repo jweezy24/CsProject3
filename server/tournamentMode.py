@@ -35,17 +35,18 @@ class Tournament:
         self.matches.append(tempNode)
 
     def generate_matches(self):
-        for i in range(0, len(self.players)):
+        i = 0
+        while len(self.players) > 0:
             if i%2 == 0:
-                tempNode = Node.Node(self.players[i].data[0] + " vs. " + self.players[i+1].data[0])
-                tempNode.left = self.players.pop()
-                tempNode.right = self.players.pop()
+                tempP1 = self.players.pop()
+                tempP2 = self.players.pop()
+                tempNode = Node.Node(tempP1.data[0] + " vs. " + tempP2.data[0])
+                tempNode.left = tempP1
+                tempNode.right = tempP2
                 self.matches.append(tempNode)
-                self.players.pop()
-                self.players.pop()
             if len(self.players)%2 == 1:
                 if i+1 == len(self.players):
-                    tempNode = Node.Node(self.players[i].data[0] + " vs. waiting" )
-                    tempNode.left = self.players.pop()
+                    tempP1 = self.players.pop()
+                    tempNode = Node.Node(tempP1.data[0] + " vs. waiting" )
                     self.matches.append(tempNode)
-                    self.players.pop()
+            i+=1
