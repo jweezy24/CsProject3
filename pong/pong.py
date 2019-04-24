@@ -21,6 +21,7 @@ threads = []
 
 next_round = False
 start = False
+game_finished = False
 previous_player = ''
 
 MCAST_GRP = '224.0.0.251'
@@ -88,6 +89,7 @@ def listen():
 def pong(player1_name, player2_name, message, game_server):
     global packet
     global start
+    global game_finished
     create_listen_thread()
     dict_message = {"op" :"update", "move": 0, "ball_x": 400, "ball_y": 350.0}
     BLACK = (0 ,0, 0)
@@ -190,7 +192,7 @@ def pong(player1_name, player2_name, message, game_server):
                     del ball
                     time.sleep(2)
                     packet = ''
-                    reset()
+                    game_finished = True
                     return
             else:
                 if "tm" in message["op"]:
@@ -213,7 +215,7 @@ def pong(player1_name, player2_name, message, game_server):
                     del ball
                     time.sleep(2)
                     packet = ''
-                    reset()
+                    game_finished = True
                     return
             pygame.quit()
             sys.exit()
@@ -294,8 +296,6 @@ def pong(player1_name, player2_name, message, game_server):
 
         clock.tick(30)
 
-def reset():
-    first_phase()
 
 
 def first_phase():
@@ -304,6 +304,7 @@ def first_phase():
     message = "none"
     global local_username
     global previous_player
+    global game_finished
     player_found = False
     while not game_found:
         if count == 0:
@@ -339,6 +340,8 @@ def first_phase():
 
         if game_found:
             pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
+            if game_finished:
+                first_phase()
 
 
 if __name__ == '__main__':
