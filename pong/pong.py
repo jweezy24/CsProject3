@@ -337,6 +337,6 @@ def first_phase():
 
 
 if __name__ == '__main__':
-    while True:
-        first_phase()
+    #while True:
+    first_phase()
     pygame.quit()
