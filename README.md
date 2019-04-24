@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/jweezy24/CsProject3.svg?branch=master)](https://travis-ci.com/jweezy24/CsProject3)
 
-Online Pong. Users can play matches of pong on a local network. *Does not work on windows.* 
+Online Pong. Users can play matches of pong on a local network. *Does not work on windows.*
 
 ## Getting Started
 
@@ -53,7 +53,8 @@ Then you should be all set to go.
 
 ## Running the tests
 
-All tests will be ran in travis. Although, running the tests manually is also an option. From the parent directory run these commands to see all the tests.
+All tests will be ran in travis. Although, running the tests manually is also an option. We have 31 total tests.
+From the parent directory run the following commands to see the results of each one.
 
 ### Player Tests
 `python3 ./tests/player_tests.py`
@@ -63,6 +64,12 @@ All tests will be ran in travis. Although, running the tests manually is also an
 
 ### Server Tests
 `python3 ./tests/server_tests.py`
+
+### Node Tests
+`python3 ./tests/node_tests.py`
+
+### Tournament Tests
+`python3 ./tests/tournament_tests.py`
 
 ## Built With/Requirements
 
