@@ -187,13 +187,17 @@ def pong(player1_name, player2_name, message, game_server):
                     movingsprites.remove(player2)
                     movingsprites.remove(ball)
                     balls.remove(ball)
+                    score1 = 0
+                    score2 = 0
                     del player1
                     del player2
                     del ball
                     time.sleep(2)
                     packet = ''
                     game_finished = True
-                    return
+                else:
+                    pygame.quit()
+                    sys.exit()
             else:
                 if "tm" in message["op"]:
                     if local_username == player2_name:
@@ -210,15 +214,17 @@ def pong(player1_name, player2_name, message, game_server):
                     movingsprites.remove(player2)
                     movingsprites.remove(ball)
                     balls.remove(ball)
+                    score1 = 0
+                    score2 = 0
                     del player1
                     del player2
                     del ball
                     time.sleep(2)
                     packet = ''
                     game_finished = True
-                    return
-            pygame.quit()
-            sys.exit()
+                else:
+                    pygame.quit()
+                    sys.exit()
         if not done:
             # Update the player and ball positions
             send_info(json.dumps(dict_message),game_server)
