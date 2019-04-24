@@ -342,6 +342,7 @@ def first_phase():
             pong(json_message["username1"][0], json_message["username2"][0], json_message, game_server)
             if game_finished:
                 game_over = False
+                count = 0
 
 
 if __name__ == '__main__':
