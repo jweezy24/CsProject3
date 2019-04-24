@@ -9,5 +9,5 @@ script:
   - python3 ./tests/player_tests.py
   - python3 ./tests/ball_tests.py
   - python3 ./tests/node_tests.py
-  - python3 ./tests/tournament_test.py
+  - python3 ./tests/tournament_tests.py
   - python3 ./tests/server_tests.py
