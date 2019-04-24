@@ -79,7 +79,7 @@ def game_intro(sock,sock2,sock3):
     display_searchSurf = None
     while intro:
         for event in pygame.event.get():
-            print(event)
+            #print(event)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
