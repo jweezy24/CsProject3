@@ -190,6 +190,7 @@ def pong(player1_name, player2_name, message, game_server):
                     del ball
                     time.sleep(2)
                     packet = ''
+                    reset()
                     return
             else:
                 if "tm" in message["op"]:
@@ -212,6 +213,7 @@ def pong(player1_name, player2_name, message, game_server):
                     del ball
                     time.sleep(2)
                     packet = ''
+                    reset()
                     return
             pygame.quit()
             sys.exit()
@@ -291,6 +293,9 @@ def pong(player1_name, player2_name, message, game_server):
         score2 = ball.p2_score
 
         clock.tick(30)
+
+def reset():
+    first_phase()
 
 
 def first_phase():
