@@ -189,9 +189,6 @@ def pong(player1_name, player2_name, message, game_server):
                     balls.remove(ball)
                     score1 = 0
                     score2 = 0
-                    del player1
-                    del player2
-                    del ball
                     time.sleep(2)
                     packet = ''
                     game_finished = True
