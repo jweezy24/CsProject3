@@ -294,13 +294,16 @@ def pong(player1_name, player2_name, message, game_server):
 
 
 def first_phase():
+    count = 0
     game_found = False
     message = "none"
     global local_username
     global previous_player
     player_found = False
     while not game_found:
-        game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
+        if count == 0:
+            game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
+            count = 1
         message = str(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
@@ -313,7 +316,6 @@ def first_phase():
 
         elif previous_player != json_message["username2"][0] and json_message["username1"][0] != local_username:
             previous_player = json_message["username2"][0]
-            #print(previous_player + " is the previous_player")
             player_found = True
 
         if username == json_message["username1"][0] and player_found:
