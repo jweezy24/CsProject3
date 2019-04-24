@@ -6,7 +6,6 @@ before_install:
 install:
   - pip install -r requirements.txt
 script:
-  - sudo python3 setup.py install
   - python3 ./tests/player_tests.py
   - python3 ./tests/ball_tests.py
   - python3 ./tests/node_tests.py
