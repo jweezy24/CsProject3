@@ -76,7 +76,7 @@ class match_maker:
             if len(self.player_queue) >= 2 and not self.isTourny:
                 self.match_players()
                 time.sleep(1)
-            elif self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
+            elif self.tournament and self.tournament.get_total_players() >= self.tourny_size and self.isTourny:
                 self.generate_bracket()
                 time.sleep(1)
                 self.tourny_in_progress = True
@@ -95,7 +95,7 @@ class match_maker:
                 self.player_queue.append((json_message["username"], json_message, (address[0], json_message["port"])))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
-            if json_message["op"] == "searching" and not self.tournament.player_in_tournament(json_message["username"]) and self.isTourny and not self.tourny_in_progress:
+            if json_message["op"] == "searching" and self.isTourny and not self.tournament.player_in_tournament(json_message["username"]) and not self.tourny_in_progress:
                 self.add_player_to_tourny(json_message["username"], (address[0], json_message["port"]))
                 if self.new_player(json_message["username"]):
                     self.write_player_to_memory(json_message["username"])
@@ -191,8 +191,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-t', help='To create a tournament -t <size of tourny>')
     options = vars(parser.parse_args())
-    server.isTourny = True
-    server.tourny_size = int(options['t'])
+    if options['t']:
+        server.isTourny = True
+        server.tourny_size = int(options['t'])
     if server.isTourny:
         server.create_tournament()
     while True:
