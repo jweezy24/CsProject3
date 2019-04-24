@@ -33,6 +33,11 @@ class match_maker:
         self.cast_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.cast_sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, 32)
 
+    def tear_down_network(self):
+        self.server_socket.close()
+        self.lobby_socket.close()
+        self.cast_sock.close()
+
     def create_tournament(self):
         self.tournament = tourny.Tournament(self.tourny_size)
 
@@ -113,7 +118,10 @@ class match_maker:
             print('Incorrect Json format')
 
     def new_player(self, name):
-        file = open('./allPlayers.csv')
+        if "tests" in sys.argv[0]:
+            file = open("./server/allPlayers.csv")
+        else:
+            file = open('./allPlayers.csv')
         reader = csv.reader(file)
         for row in reader:
             for i in row:
@@ -126,16 +134,47 @@ class match_maker:
 
     def write_player_to_memory(self, name):
         rows = []
-        old_csv = open('./allPlayers.csv', newline='')
+        if "tests" in sys.argv[0]:
+            old_csv = open("./server/allPlayers.csv")
+        else:
+            old_csv = open('./allPlayers.csv')
         reader = csv.reader(old_csv)
         for row in reader:
             rows.append(row)
         old_csv.close()
-        csv_file = open('./allPlayers.csv', 'w', newline='')
+        if "tests" in sys.argv[0]:
+            csv_file = open("./server/allPlayers.csv", 'w')
+        else:
+            csv_file = open('./allPlayers.csv', 'w')
         writer = csv.writer(csv_file)
         for i in rows:
             writer.writerow(i)
         writer.writerow(["username", name, "rank", 0,"games",0,"winrate",0,"wins",0])
+        csv_file.close()
+
+    def remove_player_from_memory(self, name):
+        rows = []
+        if "tests" in sys.argv[0]:
+            old_csv = open("./server/allPlayers.csv", 'r')
+        else:
+            old_csv = open('./allPlayers.csv', 'r')
+        reader = csv.reader(old_csv)
+        for row in reader:
+            rows.append(row)
+        old_csv.close()
+        if "tests" in sys.argv[0]:
+            csv_file = open("./server/allPlayers.csv", 'w')
+        else:
+            csv_file = open('./allPlayers.csv', 'w')
+        writer = csv.writer(csv_file)
+        checker = True
+        for i in rows:
+            for j in i:
+                if j == name:
+                    checker = False
+            if checker:
+                writer.writerow(i)
+            checker = True
         csv_file.close()
 
     #TODO add a lobby check so extra packets aren't requeued
