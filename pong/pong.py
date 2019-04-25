@@ -57,6 +57,7 @@ def main():
     global game_finished
     player_found = False
     while True:
+        time.sleep(2)
         if count == 0:
             game_found, message, username = main_menu.game_intro(sock2,sock,sock3)
             count = 1
