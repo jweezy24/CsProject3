@@ -110,6 +110,7 @@ class match_maker:
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
                 self.close_lobby(json_message["winner"])
+                time.sleep(3)
             if json_message["op"] == "tm_result":
                 print(json_message)
                 time.sleep(3)

@@ -96,8 +96,11 @@ def game_intro(sock,sock2,sock3):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
+
         if thread1.multi.is_found:
-            return(True, thread1.multi.message, username)
+            temp_message = thread1.multi.message
+            del thread1
+            return(True, temp_message, username)
 
         pygame.display.update()
         clock.tick(15)

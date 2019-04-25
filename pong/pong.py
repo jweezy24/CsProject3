@@ -48,7 +48,7 @@ packet = ''
 
 
 
-def first_phase():
+def main():
     count = 0
     game_found = False
     message = "none"
@@ -56,11 +56,12 @@ def first_phase():
     global previous_player
     global game_finished
     player_found = False
-    while not game_found:
+    while True:
         if count == 0:
             game_found, message, username = main_menu.game_intro(sock2,sock,sock3)
             count = 1
         message = str(message)
+        print(message)
         if message != "none" or message != None:
             json_message = json.loads(message.replace("b'", '').replace("'", ''))
 
@@ -96,9 +97,10 @@ def first_phase():
             game.start()
             game.join()
             if game.game_finished:
-                return
+                del game
+                count = 0
+                game_found = False
 
 if __name__ == '__main__':
-    while True:
-        first_phase()
+    main()
     pygame.quit()
