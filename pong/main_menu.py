@@ -4,7 +4,7 @@ import random
 import socket
 import csv
 import json
-import threading
+import game_threads
 
 #most code is from here https://pythonprogramming.net/pygame-start-menu-tutorial/
 pygame.init()
@@ -22,9 +22,6 @@ block_color = (53,115,255)
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Pong')
 clock = pygame.time.Clock()
-threads = []
-local_server = ("<broadcast>", 7999)
-packet = b''
 
 
 
@@ -45,33 +42,15 @@ def read_csv():
     return username
 
 
-def send_info(sock, sock2):
-    username = read_csv()
-    dict = {'op': 'searching', 'username': username, "port":sock2.getsockname()[1]}
-    json_message = json.dumps(dict)
-    sock.sendto(str(json_message).encode(), local_server)
-
-def create_listen_thread(sock):
-    t= threading.Thread(target=listen, args=(sock, ))
-    threads.append(t)
-    t.start()
-
-def listen(sock):
-    global packet
-    while True:
-        message, address = sock.recvfrom(1024)
-        print(str(message) + "HERE")
-        packet = message
-
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
     return textSurface, textSurface.get_rect()
 
 
 def game_intro(sock,sock2,sock3):
-    global packet
     pygame.init()
-    create_listen_thread(sock3)
+    thread1 = game_threads.main_menu_thread(sock, sock2, sock3)
+    thread1.start()
     username = read_csv()
     count = 0
     intro = True
@@ -117,10 +96,8 @@ def game_intro(sock,sock2,sock3):
         else:
             if display_searchRect != None:
                 gameDisplay.blit(display_searchSurf,display_searchRect)
-        send_info(sock,sock2)
-        message = packet
-        if b'match made' in message or b'tm match' in message and username in str(message):
-            return(True, message, username)
+        if thread1.multi.is_found:
+            return(True, thread1.multi.message, username)
 
         pygame.display.update()
         clock.tick(15)

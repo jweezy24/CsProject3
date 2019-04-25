@@ -30,7 +30,6 @@ class multi_cast_sock(threading.Thread):
         threading.Thread.__init__(self)
         self.multi = multi
         self.message =b''
-        self.packet = b''
         self.is_found = False
         self.daemon = True
 

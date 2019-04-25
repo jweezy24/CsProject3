@@ -308,7 +308,7 @@ def first_phase():
     player_found = False
     while not game_found:
         if count == 0:
-            game_found, message, username = main_menu.game_intro(sock,sock2,sock3)
+            game_found, message, username = main_menu.game_intro(sock2,sock,sock3)
             count = 1
         message = str(message)
         if message != "none" or message != None:
