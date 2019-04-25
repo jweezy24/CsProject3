@@ -109,6 +109,7 @@ class match_maker:
             if json_message["op"] == "game_over":
                 print("got packet to update winrate")
                 self.update_winrate(json_message["winner"], json_message["loser"])
+                self.close_lobby(json_message["winner"])
             if json_message["op"] == "tm_result":
                 print(json_message)
                 time.sleep(3)
@@ -183,12 +184,16 @@ class match_maker:
         for i in self.player_queue:
             if i[0] == name:
                 return True
+        for i in self.lobbies:
+            if i[1] == name or i[2] == name:
+                return True
         return False
 
     def match_players(self):
-        print(self.player_queue)
+        print(str(self.player_queue) + " before")
         if len(self.player_queue) >=2:
             self.create_lobby(self.player_queue.pop(), self.player_queue.pop())
+        print(self.player_queue)
 
     def create_lobby(self, player1, player2):
         t = threading.Thread(target=self.play_game, args=(player1,player2, ))
@@ -225,6 +230,13 @@ class match_maker:
         dict = {"op":" match made ", "username1": (player1[0], player1[2]), "username2": (player2[0], player2[2])}
         send_out_1 = json.dumps(dict)
         self.cast_sock.sendto(send_out_1.encode(), (self.MCAST_GRP, self.MCAST_PORT))
+
+
+    def close_lobby(self, name):
+        for i in self.lobbies:
+            if i[1] == name or i[2] == name:
+                self.lobbies.remove(i)
+                return
 
 if __name__ == '__main__':
     server = match_maker()

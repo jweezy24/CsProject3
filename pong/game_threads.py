@@ -4,24 +4,73 @@ import socket
 import json
 import time
 
-class reciever(threading.Thread):
+class sender(threading.Thread):
 
-  def __init__(self, get_sock):
-      threading.Thread.__init__(self)
-      self.get_sock = get_sock
+  def __init__(self, sender, rev, game_server, start=None):
+    threading.Thread.__init__(self)
+    self.sender = sender
+    self.begin = True
+    self.daemon = True
+    self.game_server = game_server
+    self.rev = rev
+    if not start:
+        self.do_send = False
+    else:
+        self.do_send = True
 
   def run(self):
-      print( "Value send " + str(self.h))
+    pass
+
+  def send_start(self):
+    self.rev.sender.settimeout(10)
+    #print(game_server)
+    while not self.begin:
+        try:
+            self.sender.sendto("start".encode(), self.game_server)
+            message, address = self.rev.sender.recvfrom(1024)
+            if b"start" in message:
+                self.begin = True
+        except Exception as e:
+            print(e)
+            print("leaving thread")
+            break
+
+  def send_info(self, message):
+    self.sender.sendto(str(message).encode(), self.game_server)
+
+  def send_victory(self, dict):
+    #print(game_server)
+    game_server = ("<broadcast>", 7999)
+    self.sender.sendto(str(dict).encode(), game_server)
 
 
-class sender(threading.Thread):
+class reciever(threading.Thread):
 
   def __init__(self, sender):
       threading.Thread.__init__(self)
       self.sender = sender
+      self.packet = ''
+      self.begin = False
 
   def run(self):
-      print( "Value send " + str(self.h))
+     self.listen()
+
+
+  def listen(self):
+      self.sender.settimeout(10)
+      print("created thread")
+      while True:
+          try:
+              message, address = self.sender.recvfrom(1024)
+              #print(str(message) + " in pong listener" )
+              if b'start' in message:
+                  self.begin = True
+              self.packet = str(message)
+          except Exception as e:
+               print(e)
+               print("leaving thread")
+               break
+
 
 
 class multi_cast_sock(threading.Thread):
