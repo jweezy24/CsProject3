@@ -78,6 +78,7 @@ class match_maker:
         #creates a tournament object
         try:
             message, address = self.server_socket.recvfrom(1024)
+            print(message)
             if len(self.player_queue) >= 2 and not self.isTourny:
                 self.match_players()
                 time.sleep(1)
