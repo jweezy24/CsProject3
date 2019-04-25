@@ -2,6 +2,7 @@ import threading
 import csv
 import socket
 import json
+import time
 
 class reciever(threading.Thread):
 
@@ -28,9 +29,19 @@ class multi_cast_sock(threading.Thread):
     def __init__(self, multi):
         threading.Thread.__init__(self)
         self.multi = multi
+        self.message =b''
+        self.packet = b''
+        self.is_found = False
+        self.daemon = True
 
     def run(self):
-        print( "Value send " + str(self.h))
+        self.listen()
+
+    def listen(self):
+        while not self.is_found:
+            self.message, address = self.multi.recvfrom(1024)
+            if b'match made' in self.message:
+                self.is_found = True
 
 class main_menu_thread(threading.Thread):
 
@@ -39,18 +50,20 @@ class main_menu_thread(threading.Thread):
         threading.Thread.__init__(self)
         self.getter = getter
         self.sender = sender
-        self.multi = multi
+        self.multi = multi_cast_sock(multi)
         self.packet = b''
         self.username = self.read_csv()
         self.daemon = True
-        self.is_found = False
+        self.message = b''
         self.local_server = ("<broadcast>", 7999)
         if self.username == 'NOT_FOUND':
             raise "USER NOT FOUND"
 
     def run(self):
-        while not self.is_found:
-            self.listen()
+        self.multi.start()
+        while not self.multi.is_found:
+            time.sleep(2)
+            self.send_info()
 
 
     def read_csv(self):
@@ -74,18 +87,6 @@ class main_menu_thread(threading.Thread):
         dict = {'op': 'searching', 'username': username, "port":self.getter.getsockname()[1]}
         json_message = json.dumps(dict)
         self.sender.sendto(str(json_message).encode(), self.local_server)
-
-    def __del__(self):
-        print("thread deleted")
-
-    def listen(self):
-        while True:
-            self.send_info()
-            message, address = self.multi.recvfrom(1024)
-            print(str(message) + "HERE")
-            self.packet = message
-            if b'match made' in message:
-                self.is_found = True
 
 if __name__ == "__main__":
     #init networking stuff
@@ -113,6 +114,6 @@ if __name__ == "__main__":
 
     thread1 = main_menu_thread(sock2, sock, sock3)
     thread1.start()
-    while not thread1.is_found:
-        print(thread1.packet)
+    while not thread1.multi.is_found:
+        pass
     del thread1
