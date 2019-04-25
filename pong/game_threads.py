@@ -21,7 +21,7 @@ class sender(threading.Thread):
 
 
 class multi_cast_sock(Threading.thread):
-    
+
     def __init__(self, get_sock):
         threading.Thread.__init__(self)
         self.get_sock = get_sock
